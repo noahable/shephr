@@ -215,7 +215,7 @@
   <ul class="nl">
     <li><button class="nt ai" onclick="switchTab('i')">Intelligence</button></li>
     <li><button class="nt" onclick="switchTab('s')">War Games</button></li>
-    <li><a href="mailto:hello@shephr.io" class="ncta">Request Access</a></li>
+    <li><a href="/cdn-cgi/l/email-protection#4b232e2727240b38232e3b2339652224" class="ncta">Request Access</a></li>
   </ul>
 </nav>
  
@@ -353,10 +353,10 @@
         <h2 class="sh2">See your network clearly.<br/><em class="i">Before passengers do.</em></h2>
         <p class="sb">Request a briefing to discuss your operations context and how the Shepherd intelligence layer maps to it.</p>
         <div class="btns">
-          <a href="mailto:hello@shephr.io" class="bp">Request a Briefing</a>
+          <a href="/cdn-cgi/l/email-protection#aac2cfc6c6c5ead9c2cfdac2d884c3c5" class="bp">Request a Briefing</a>
           <button class="bg2" onclick="switchTab('s')">Explore War Games</button>
         </div>
-        <p class="cta-fine">No sales process. Direct conversation with the founding team — hello@shephr.io</p>
+        <p class="cta-fine">No sales process. Direct conversation with the founding team — <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a5cdc0c9c9cae5d6cdc0d5cdd78bccca">[email&#160;protected]</a></p>
       </div>
     </div>
   </div>
@@ -511,10 +511,10 @@
         <h2 class="sh2">Build the muscle memory<br/><em class="s">before the next event.</em></h2>
         <p class="sb">We work with a focused set of airline partners. Request a briefing to discuss your operations context and how Shepherd War Games maps to it.</p>
         <div class="btns">
-          <a href="mailto:hello@shephr.io" class="bp">Request a Briefing</a>
+          <a href="/cdn-cgi/l/email-protection#a4ccc1c8c8cbe4d7ccc1d4ccd68acdcb" class="bp">Request a Briefing</a>
           <button class="bg2" onclick="switchTab('i')">Explore Intelligence</button>
         </div>
-        <p class="cta-fine">No sales process. Direct conversation with the founding team — hello@shephr.io</p>
+        <p class="cta-fine">No sales process. Direct conversation with the founding team — <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d1b9b4bdbdbe91a2b9b4a1b9a3ffb8be">[email&#160;protected]</a></p>
       </div>
     </div>
   </div>
@@ -530,14 +530,14 @@
         <span class="fcp" style="margin-left:14px">© 2026 Shepherd. Disruption Intelligence for Aviation.</span>
       </div>
       <ul class="fls">
-        <li><a href="mailto:hello@shephr.io">Contact</a></li>
+        <li><a href="/cdn-cgi/l/email-protection#fe969b929291be8d969b8e968cd09791">Contact</a></li>
         <li><a href="#">Privacy</a></li>
       </ul>
     </div>
   </div>
 </footer>
  
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   const SC=[
     {t:'SESSION-WG-003 / CREW-LIMITS / TRIAGE',l:'⚡ Inject — T+14 min',x:'Delay cascade has pushed 4 crews into their final 2 hours simultaneously. Standby pool: 2 crews. Must select 2 of 4 FTL-affected flights. BA721 (82 connections, 4h20), BA722 (12 connections, 1h45), BA723 (45 connections, crew at dest), BA724 (last service, 180 pax).',o:[{k:'A',t:'Allocate to BA721 (highest connection risk) and BA724 (no alternative). Cancel BA722 and BA723.',op:true},{k:'B',t:'Allocate to longest-haul BA721 and BA723 by flight time.',op:false},{k:'C',t:'Allocate to easiest-to-operate flights to maximise success probability.',op:false}]},
     {t:'SESSION-WG-003 / CONNECTION-CASCADE / RECOGNITION',l:'⚡ Inject — T+08 min',x:'Inbound BA2201 tracking 47 min late. 82 passengers have connections in next 90 min. 14 on 3 long-haul services with hard cut-off times. Turnaround: 35 min minimum.',o:[{k:'A',t:'Protect 14 long-haul connections immediately. Fast-track BA2201 turnaround. Brief customer teams on 68 short-haul impacts.',op:true},{k:'B',t:'Wait for confirmed arrival time before making connection protection decisions.',op:false},{k:'C',t:'Protect all 82 connections equally. Hold all 3 long-haul services.',op:false}]},
@@ -568,8 +568,8 @@
       if(n.classList.contains('ti')&&t==='i')n.classList.add('on');
       if(n.classList.contains('ts')&&t==='s')n.classList.add('on');
     });
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-</script>
-</body>
-</html>
+    setTimeout(()=>{
+      const first=document.querySelector('#panel-'+t+'.on .sec');
+      if(first)first.scrollIntoView({behavior:'smooth',block:'start'});
+    },50);
+  }'
