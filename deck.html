@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shepherd — Disruption Intelligence for Aviation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=DM+Mono:wght@300;400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --bg:#07090f;--s1:#0c0f1a;--s2:#0f1220;--bd:#161d2e;--bd2:#1e2840;
+      --gold:#c9a84c;--gdim:#8a6e2f;--gg:rgba(201,168,76,0.10);
+      --blue:#4a9eff;--bdim:rgba(74,158,255,0.08);
+      --w:#d8e0f0;--mu:#7a869e;--di:#3d4a60;
+      --ser:'Playfair Display',Georgia,serif;
+      --mo:'DM Mono',monospace;
+      --sa:'Sora',system-ui,sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--w);font-family:var(--sa);font-size:15px;line-height:1.6;overflow-x:hidden}
+    ::selection{background:var(--gold);color:#000}
+    ::-webkit-scrollbar{width:3px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--di);border-radius:2px}
+
+    /* NAV */
+    nav{position:sticky;top:0;height:54px;background:rgba(7,9,15,0.95);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 48px;z-index:100}
+    .nb{display:flex;align-items:center;gap:9px;text-decoration:none}
+    .nd{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:pd 3s ease-in-out infinite}
+    @keyframes pd{0%,100%{opacity:1}50%{opacity:.6}}
+    .nw{font-family:var(--mo);font-size:11px;color:var(--gold);letter-spacing:.22em;text-transform:uppercase}
+    .nl{display:flex;align-items:center;gap:28px;list-style:none}
+    .nl a{font-family:var(--mo);font-size:10px;color:var(--mu);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:color .2s}
+    .nl a:hover{color:var(--w)}
+    .ncta{color:var(--gold)!important;border:1px solid var(--gdim);padding:6px 14px;border-radius:2px;transition:background .2s}
+    .ncta:hover{background:var(--gg)!important}
+
+    /* LAYOUT */
+    .wrap{max-width:1080px;margin:0 auto;padding:0 48px}
+    section{position:relative;z-index:1;padding:96px 0;border-bottom:1px solid var(--bd)}
+    section:last-of-type{border-bottom:none}
+
+    /* SHARED */
+    .ey{display:flex;align-items:center;gap:11px;font-family:var(--mo);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+    .el{width:26px;height:1px;background:var(--gold);flex-shrink:0}
+    .el-b{width:26px;height:1px;background:var(--blue);opacity:.5;flex-shrink:0}
+    .ey-b{color:var(--blue);opacity:.8}
+    .h2{font-family:var(--ser);font-size:clamp(26px,3.2vw,44px);font-weight:500;color:var(--w);line-height:1.12;letter-spacing:-.02em;margin-bottom:16px}
+    .h2 em{font-style:italic;color:var(--gold)}
+    .h2 em.b{color:var(--blue)}
+    .lead{font-size:15px;color:var(--mu);line-height:1.78;max-width:580px;margin-bottom:48px}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+    .three{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:2px;overflow:hidden}
+    .four{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:2px;overflow:hidden}
+    .six{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:2px;overflow:hidden}
+
+    .card{background:var(--s1);padding:28px 24px;transition:background .25s}
+    .card:hover{background:var(--s2)}
+    .cn{font-family:var(--mo);font-size:9px;letter-spacing:.1em;margin-bottom:12px}
+    .cn-g{color:var(--gold);opacity:.5}.cn-b{color:var(--blue);opacity:.5}
+    .ct{font-family:var(--ser);font-size:17px;font-weight:500;color:var(--w);margin-bottom:8px;line-height:1.3}
+    .cd{font-size:13px;color:var(--mu);line-height:1.65;font-weight:300}
+    .csigs{margin-top:12px;display:flex;flex-direction:column;gap:4px}
+    .csig{display:flex;gap:7px;font-family:var(--mo);font-size:10px;color:var(--di);align-items:center}
+    .csig::before{content:'';width:3px;height:3px;border-radius:50%;flex-shrink:0}
+    .csig-g::before{background:var(--gold);opacity:.5}
+    .csig-b::before{background:var(--blue);opacity:.5}
+
+    /* PILL BADGE */
+    .pill{display:inline-flex;align-items:center;gap:7px;font-family:var(--mo);font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:5px 12px;border-radius:2px;margin-bottom:16px}
+    .pill-g{color:var(--gold);background:var(--gg);border:1px solid rgba(201,168,76,.18)}
+    .pill-b{color:var(--blue);background:var(--bdim);border:1px solid rgba(74,158,255,.18)}
+    .pdot{width:4px;height:4px;border-radius:50%}
+    .pill-g .pdot{background:var(--gold)}.pill-b .pdot{background:var(--blue)}
+
+    /* HERO */
+    #hero{min-height:100vh;padding-top:54px;display:flex;align-items:center;overflow:hidden}
+    .hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(74,158,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(74,158,255,.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 70% 60% at 30% 55%,black 20%,transparent 100%)}
+    .hglow{position:absolute;top:15%;left:5%;width:560px;height:400px;background:radial-gradient(ellipse,rgba(201,168,76,.05) 0%,transparent 70%);pointer-events:none}
+    .hero-in{position:relative;padding:80px 48px 120px;max-width:1080px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 380px;gap:80px;align-items:end}
+    .hl{position:relative;padding-left:22px}
+    .hbar{position:absolute;left:0;top:4px;bottom:0;width:2px;background:var(--gold);opacity:.7}
+    .htag{font-family:var(--mo);font-size:10px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:28px;opacity:.85}
+    .hh1{font-family:var(--ser);font-size:clamp(52px,7vw,90px);font-weight:700;color:var(--w);line-height:.92;letter-spacing:-.03em;margin-bottom:16px}
+    .hitalic{font-family:var(--ser);font-style:italic;font-size:clamp(18px,2vw,26px);color:var(--gold);margin-bottom:22px}
+    .hrule{width:48px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin-bottom:22px}
+    .hdesc{font-size:15px;color:var(--mu);max-width:480px;line-height:1.78;margin-bottom:32px}
+    .hpill{display:inline-block;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.28);font-family:var(--mo);font-size:9px;letter-spacing:.12em;color:var(--gold);padding:7px 14px;text-transform:uppercase}
+    .hstats{display:flex;flex-direction:column;gap:1px}
+    .hstat{background:var(--s1);padding:20px 22px;display:flex;align-items:baseline;gap:14px;border-left:2px solid var(--bd2);transition:border-color .2s}
+    .hstat:hover{border-left-color:var(--gold)}
+    .hsn{font-family:var(--ser);font-size:30px;font-weight:700;color:var(--gold);line-height:1;flex-shrink:0}
+    .hsl{font-size:12px;color:var(--mu);line-height:1.5}
+
+    /* PROBLEM */
+    .prob-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-top:48px;border-radius:2px;overflow:hidden}
+    .pc{background:var(--s1);padding:28px 22px;position:relative}
+    .pc-hi{background:#09090e}
+    .pc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--bd2)}
+    .pc-green::before{background:#2a7a48}
+    .pc-blue::before{background:#2a4a7a}
+    .pc-gold::before{background:var(--gold)}
+    .ptag{font-family:var(--mo);font-size:8px;letter-spacing:.16em;text-transform:uppercase;border:1px solid var(--bd2);padding:3px 9px;display:inline-block;margin-bottom:12px;color:var(--mu)}
+    .ptag-g{color:var(--gold);border-color:rgba(201,168,76,.35)}
+    .ptit{font-size:15px;font-weight:600;color:var(--w);margin-bottom:18px}
+    .ptit-g{color:var(--gold)}
+    .bul{display:flex;gap:9px;align-items:flex-start;margin-bottom:8px;font-size:13px;color:var(--w);line-height:1.5}
+    .bd-g{width:3px;height:3px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px}
+    .bd-m{width:3px;height:3px;border-radius:50%;background:var(--di);flex-shrink:0;margin-top:7px}
+    .insight{margin-top:1px;padding:14px 22px;background:rgba(201,168,76,.06);border:1px solid var(--bd2);font-size:13px;color:var(--mu);font-style:italic;text-align:center;line-height:1.65}
+
+    /* DASHBOARD MOCK */
+    .dmock{border:1px solid var(--bd);border-radius:2px;background:var(--s1);overflow:hidden}
+    .dbar{display:flex;align-items:center;gap:7px;padding:10px 16px;border-bottom:1px solid var(--bd);background:var(--bg)}
+    .dd{width:6px;height:6px;border-radius:50%}
+    .dl{background:#36d68a;animation:lp 2s ease-in-out infinite}
+    @keyframes lp{0%,100%{opacity:1;box-shadow:0 0 5px #36d68a}50%{opacity:.35;box-shadow:none}}
+    .dw2{background:#ffb800}.dc2{background:#ff4d4d}
+    .dtit{font-family:var(--mo);font-size:9px;color:var(--di);letter-spacing:.09em;margin-left:3px}
+    .dtime{font-family:var(--mo);font-size:9px;color:var(--di);margin-left:auto}
+    .dbody{padding:10px;display:flex;flex-direction:column;gap:5px}
+    .dr{display:flex;align-items:center;gap:9px;padding:8px 11px;background:var(--s2);border:1px solid var(--bd);border-radius:2px}
+    .dr-al{border-color:rgba(255,77,77,.2);background:rgba(255,77,77,.04)}
+    .dr-wn{border-color:rgba(255,184,0,.2);background:rgba(255,184,0,.04)}
+    .ds{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+    .dsg{background:#36d68a}.dsa{background:#ffb800}.dsr{background:#ff4d4d}
+    .dfl{font-family:var(--mo);font-size:11px;color:var(--w);font-weight:500;width:52px;flex-shrink:0}
+    .ddt{font-size:11px;color:var(--mu);flex:1}
+    .dbg{font-family:var(--mo);font-size:8px;padding:2px 7px;border-radius:1px;flex-shrink:0;letter-spacing:.07em;text-transform:uppercase}
+    .dbg-r{color:#ff6b6b;background:rgba(255,77,77,.1);border:1px solid rgba(255,77,77,.2)}
+    .dbg-a{color:#ffb800;background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.2)}
+    .dbg-b{color:var(--blue);background:var(--bdim);border:1px solid rgba(74,158,255,.2)}
+
+    /* FLYWHEEL */
+    .fw{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-top:48px;border-radius:2px;overflow:hidden}
+    .fws{background:var(--s1);padding:26px 16px;text-align:center;position:relative}
+    .fws::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)}
+    .fwn{width:30px;height:30px;background:var(--gold);color:var(--bg);font-family:var(--mo);font-size:11px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .fwt{font-size:13px;font-weight:600;color:var(--w);margin-bottom:6px;line-height:1.3}
+    .fwb{font-size:12px;color:var(--mu);line-height:1.5}
+
+    /* SCORECARD */
+    .sc{border:1px solid var(--bd);border-radius:2px;background:var(--s1);overflow:hidden}
+    .sch{padding:14px 20px;border-bottom:1px solid var(--bd);background:var(--bg);display:flex;justify-content:space-between;align-items:center}
+    .sct{font-family:var(--mo);font-size:10px;color:var(--mu);letter-spacing:.09em;text-transform:uppercase}
+    .sco{font-family:var(--mo);font-size:20px;color:var(--gold);font-weight:500}
+    .sdim{padding:12px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px}
+    .sdim:last-child{border-bottom:none}
+    .dn{font-size:13px;color:var(--w);width:165px;flex-shrink:0}
+    .dbt{flex:1;height:2px;background:var(--bd);border-radius:1px;overflow:hidden}
+    .dbf{height:100%;background:var(--gold);border-radius:1px}
+    .dsc{font-family:var(--mo);font-size:11px;color:var(--gold);width:32px;text-align:right;flex-shrink:0}
+
+    /* BENCHMARKS */
+    .bench{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-top:48px;border-radius:2px;overflow:hidden}
+    .bc{background:var(--s1);padding:28px 22px;position:relative}
+    .bc-hi{background:#09090e}
+    .bc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+    .bc-bl::before{background:#2a4a7a}
+    .bc-gr::before{background:#2a7a48}
+    .bc-go::before{background:var(--gold)}
+    .blbl{font-family:var(--mo);font-size:8px;letter-spacing:.16em;color:var(--mu);text-transform:uppercase;margin-bottom:7px}
+    .blbl-g{color:var(--gold)}
+    .btit{font-size:15px;font-weight:600;color:var(--w);margin-bottom:14px}
+    .btit-g{color:var(--gold)}
+    .brule{height:1px;background:var(--bd2);margin-bottom:14px}
+    .bbot{margin-top:auto;padding-top:14px}
+    .bbot-lo{font-size:12px;font-style:italic;color:var(--di);line-height:1.5;border-top:1px solid var(--bd2);padding-top:10px}
+    .bbot-hi{font-family:var(--mo);font-size:9px;color:var(--gold);border:1px solid rgba(201,168,76,.2);background:var(--gg);padding:8px 12px;text-align:center;letter-spacing:.1em;text-transform:uppercase}
+
+    /* CREDS */
+    .cred-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border:1px solid var(--bd);margin-top:48px;border-radius:2px;overflow:hidden}
+    .cred-c{background:var(--s1);padding:32px 28px;position:relative}
+    .cred-c::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)}
+    .cred-sup{font-family:var(--mo);font-size:9px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
+    .cred-t{font-family:var(--ser);font-size:clamp(16px,1.7vw,20px);font-weight:500;color:var(--w);line-height:1.25;margin-bottom:16px}
+    .cred-rule{height:1px;background:var(--bd2);margin-bottom:16px}
+    .cred-b{font-size:14px;color:var(--mu);line-height:1.78}
+    .cred-b p+p{margin-top:12px}
+
+    /* TIERS */
+    .tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-top:48px;border-radius:2px;overflow:hidden}
+    .tc{background:var(--s1);padding:26px 22px;position:relative}
+    .tc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)}
+    .tlbl{font-family:var(--mo);font-size:8px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:9px}
+    .tnm{font-size:15px;font-weight:600;color:var(--w);margin-bottom:7px}
+    .tdsc{font-size:13px;color:var(--mu);font-style:italic;line-height:1.55;margin-bottom:14px}
+    .trule{height:1px;background:var(--bd2);margin-bottom:14px}
+
+    /* CLOSING */
+    #closing{text-align:center;overflow:hidden;padding:120px 0}
+    .cglow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(201,168,76,.04) 0%,transparent 70%);pointer-events:none}
+    .ch{font-family:var(--ser);font-size:clamp(32px,4.5vw,58px);font-weight:700;color:var(--w);line-height:1.1;margin-bottom:18px}
+    .csub{font-size:16px;color:var(--mu);max-width:560px;margin:0 auto 44px;line-height:1.8}
+    .cpills{display:inline-flex;gap:1px;background:var(--bd);margin-bottom:44px;border:1px solid var(--bd);border-radius:2px;overflow:hidden}
+    .cpill{background:var(--s1);padding:20px 30px;min-width:150px}
+    .cpill-n{font-family:var(--ser);font-size:24px;font-weight:700;color:var(--gold);margin-bottom:4px}
+    .cpill-l{font-size:10px;color:var(--mu);font-family:var(--mo);letter-spacing:.06em}
+    .btn{display:inline-block;font-family:var(--mo);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--bg);background:var(--gold);padding:14px 32px;text-decoration:none;border-radius:2px;transition:opacity .2s}
+    .btn:hover{opacity:.85}
+    .cfine{margin-top:24px;font-family:var(--mo);font-size:9px;color:var(--di);letter-spacing:.14em;text-transform:uppercase}
+
+    /* FOOTER */
+    footer{border-top:1px solid var(--bd);padding:26px 48px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+    .fcp{font-family:var(--mo);font-size:10px;color:var(--di);letter-spacing:.07em}
+
+    /* FADE UP */
+    .fu{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+    .fu.in{opacity:1;transform:translateY(0)}
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+    /* DIVIDER TAG */
+    .dtag{margin-top:1px;padding:12px 22px;border:1px solid rgba(201,168,76,.16);background:rgba(201,168,76,.05);font-family:var(--mo);font-size:9px;color:var(--gold);letter-spacing:.14em;text-align:center;text-transform:uppercase}
+
+    @media(max-width:900px){
+      nav{padding:0 20px}
+      .wrap{padding:0 20px}
+      .hero-in{grid-template-columns:1fr;padding:60px 20px 80px}
+      .hstats{display:none}
+      .two,.cred-grid{grid-template-columns:1fr}
+      .three,.four,.six,.prob-grid,.bench,.tier-grid{grid-template-columns:1fr}
+      .fw{grid-template-columns:repeat(3,1fr)}
+      footer{flex-direction:column;gap:10px;padding:20px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nb" href="index.html">
+    <div class="nd"></div>
+    <span class="nw">Shepherd</span>
+  </a>
+  <ul class="nl">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#intelligence">Intelligence</a></li>
+    <li><a href="#wargames">War Games</a></li>
+    <li><a href="#credentials">Credentials</a></li>
+    <li><a href="#closing" class="ncta">Request Briefing</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hgrid"></div>
+  <div class="hglow"></div>
+  <div class="hero-in">
+    <div class="hl fu">
+      <div class="hbar"></div>
+      <div class="htag">Disruption Intelligence · War Games Simulation</div>
+      <div class="hh1">SHEPHERD</div>
+      <div class="hitalic">Disruption Intelligence for Aviation</div>
+      <div class="hrule"></div>
+      <div class="hdesc">Two products. One mission: close the intelligence gap that lets disruptions cascade, and the decision gap that makes them cost more than they should.</div>
+      <div class="hpill">Founded by a former BA Disruptions Product Owner</div>
+    </div>
+    <div class="hstats fu d2">
+      <div class="hstat"><div class="hsn">$60B+</div><div class="hsl">Annual cost of aviation disruption globally</div></div>
+      <div class="hstat"><div class="hsn">~40%</div><div class="hsl">Of that cost driven by sub-optimal recovery decisions</div></div>
+      <div class="hstat"><div class="hsn">&lt;5%</div><div class="hsl">Of operations training spent in realistic scenarios</div></div>
+      <div class="hstat"><div class="hsn">0</div><div class="hsl">Existing tools that train teams on cascade failures</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- THE PROBLEM -->
+<section id="problem">
+  <div class="wrap">
+    <div class="ey fu"><div class="el"></div>The Problem</div>
+    <div class="h2 fu d1">Aviation has a tooling problem.<br><em>And a training problem.</em></div>
+    <div class="lead fu d2">Two gaps exist simultaneously across every airline. The first is intelligence — operations teams lack a real-time picture of cascade risk before it compounds. The second is decision quality — even when the data is there, teams without practised muscle memory make slower, costlier calls.</div>
+    <div class="prob-grid">
+      <div class="pc pc-green fu">
+        <div class="ptag">Cockpit Standard</div>
+        <div class="ptit">Pilot Simulation</div>
+        <div class="bul"><div class="bd-m"></div>Level D full-flight simulators required globally</div>
+        <div class="bul"><div class="bd-m"></div>Emergency scenarios practised to instinct</div>
+        <div class="bul"><div class="bd-m"></div>Performance scored against regulatory standards</div>
+        <div class="bul"><div class="bd-m"></div>Recurrent training mandated by law</div>
+      </div>
+      <div class="pc pc-blue fu d1">
+        <div class="ptag">Military Doctrine</div>
+        <div class="ptit">War Games</div>
+        <div class="bul"><div class="bd-m"></div>Train like you fight — every major military</div>
+        <div class="bul"><div class="bd-m"></div>Scenario exercises replicate real conditions</div>
+        <div class="bul"><div class="bd-m"></div>After-action reviews embed institutional learning</div>
+        <div class="bul"><div class="bd-m"></div>Commanders train decisions to muscle memory</div>
+      </div>
+      <div class="pc pc-gold pc-hi fu d2">
+        <div class="ptag ptag-g">No Equivalent Exists</div>
+        <div class="ptit ptit-g">Operations Teams</div>
+        <div class="bul"><div class="bd-g"></div>Identical decision stakes to cockpit and command</div>
+        <div class="bul"><div class="bd-g"></div>No simulation standard exists</div>
+        <div class="bul"><div class="bd-g"></div>No real-time cascade intelligence layer</div>
+        <div class="bul"><div class="bd-g"></div><strong style="color:var(--gold)">Shepherd closes both gaps</strong></div>
+      </div>
+    </div>
+    <div class="insight fu">Aviation spends billions on schedule optimisation tools. It spends almost nothing on the intelligence or training that determines what happens when those schedules break.</div>
+  </div>
+</section>
+
+<!-- INTELLIGENCE -->
+<section id="intelligence">
+  <div class="wrap">
+    <div class="pill pill-b fu"><div class="pdot"></div>Pillar One</div>
+    <div class="ey fu"><div class="el-b"></div><span class="ey-b">Live Disruption Intelligence</span></div>
+    <div class="h2 fu d1">See the network.<br><em class="b">Before it breaks.</em></div>
+    <div class="lead fu d2">Shepherd's intelligence layer surfaces connection risk, network fragility, and cascade exposure in real time — giving teams the situational picture they need to make proactive decisions, not reactive ones.</div>
+
+    <div class="two" style="margin-bottom:48px">
+      <div>
+        <div class="four">
+          <div class="card fu">
+            <div class="cn cn-b">01</div>
+            <div class="ct">Connection Risk Scoring</div>
+            <p class="cd">Every inbound flight is scored against its connection cluster in real time. Misconnect probability, passenger volume at risk, and rebooking options surfaced before the aircraft lands.</p>
+            <div class="csigs">
+              <div class="csig csig-b">Live misconnect probability per flight</div>
+              <div class="csig csig-b">Connection cluster passenger count</div>
+              <div class="csig csig-b">Downstream rebooking capacity flagged</div>
+            </div>
+          </div>
+          <div class="card fu d1">
+            <div class="cn cn-b">02</div>
+            <div class="ct">Network Fragility Mapping</div>
+            <p class="cd">Scores the structural fragility of your network at any moment — identifying which routes, crew pools, and aircraft are operating closest to their limits before a trigger event hits.</p>
+            <div class="csigs">
+              <div class="csig csig-b">Crew FTL proximity indicators</div>
+              <div class="csig csig-b">Thin-route failure point flags</div>
+              <div class="csig csig-b">Slot window pressure scoring</div>
+            </div>
+          </div>
+          <div class="card fu d2">
+            <div class="cn cn-b">03</div>
+            <div class="ct">Cascade Flag & Impact Mapping</div>
+            <p class="cd">When a delay occurs, Shepherd immediately maps its full downstream cascade — flagging affected connections, welfare obligations, and crew knock-ons across the entire day.</p>
+            <div class="csigs">
+              <div class="csig csig-b">Automated cascade chain mapping</div>
+              <div class="csig csig-b">EU261 / FTL exposure flagged instantly</div>
+              <div class="csig csig-b">Priority action sequencing surfaced</div>
+            </div>
+          </div>
+          <div class="card fu d3">
+            <div class="cn cn-b">04</div>
+            <div class="ct">Real-Time Disruption Dashboard</div>
+            <p class="cd">A single operational picture — live flight status, fragility scores, active cascade flags, and passenger impact metrics consolidated for every team that needs visibility.</p>
+            <div class="csigs">
+              <div class="csig csig-b">Cross-network live status view</div>
+              <div class="csig csig-b">Role-based visibility layers</div>
+              <div class="csig csig-b">Configurable alert thresholds</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fu d1">
+        <div class="dmock">
+          <div class="dbar">
+            <div class="dd dl"></div>
+            <span class="dtit">SHEPHERD / LIVE — 14:32 UTC</span>
+            <span class="dtime">Fragility: ELEVATED · 3 flags</span>
+          </div>
+          <div class="dbody">
+            <div class="dr dr-al"><div class="ds dsr"></div><div class="dfl">BA2201</div><div class="ddt">+47 min · 82 connections at risk · Cut-off in 38 min</div><div class="dbg dbg-r">Cascade</div></div>
+            <div class="dr dr-wn"><div class="ds dsa"></div><div class="dfl">BA4412</div><div class="ddt">Crew FTL limit · 2 standby available · 90 min window</div><div class="dbg dbg-a">FTL Watch</div></div>
+            <div class="dr dr-wn"><div class="ds dsa"></div><div class="dfl">BA0871</div><div class="ddt">CTOT closing · Slot held 22 min · Handler SLA risk</div><div class="dbg dbg-a">Slot</div></div>
+            <div class="dr"><div class="ds dsg"></div><div class="dfl">BA1103</div><div class="ddt">On time · 12 connections protected · No flags</div><div class="dbg dbg-b">Nominal</div></div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:14px 16px;border:1px solid rgba(74,158,255,.15);border-radius:2px;background:rgba(74,158,255,.04)">
+          <div style="font-family:var(--mo);font-size:9px;color:var(--blue);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px">Why it matters</div>
+          <p style="font-size:13px;color:var(--mu);line-height:1.65">Connection clusters, fragility scores, and cascade flags are currently scattered across disconnected systems — or not surfaced at all until the window to act has closed. Shepherd consolidates them into a single proactive intelligence picture.</p>
+        </div>
+      </div>
+    </div>
+    <div class="dtag fu">Intelligence layer · Watches · Anticipates · Flags · Prevents</div>
+  </div>
+</section>
+
+<!-- WAR GAMES -->
+<section id="wargames">
+  <div class="wrap">
+    <div class="pill pill-g fu"><div class="pdot"></div>Pillar Two</div>
+    <div class="ey fu"><div class="el"></div>War Games & Simulation</div>
+    <div class="h2 fu d1">Train the decisions<br><em>that matter most.</em></div>
+    <div class="lead fu d2">Seeing the cascade is only half the problem. Teams need the practised decision instincts to act on it — fast, correctly, under pressure. Shepherd's simulation layer builds that muscle memory through scored, repeatable exercises with automated after-action review.</div>
+
+    <div class="six fu d1">
+      <div class="card">
+        <div class="cn cn-g">01</div>
+        <div class="ct">Scenario Engine</div>
+        <p class="cd">Branching disruption scenarios across crew, connection, runway, weather, and systems events. Built from real industry event patterns. New scenarios authored by your teams in minutes.</p>
+        <div class="csigs">
+          <div class="csig csig-g">Crew, slot, connection, weather, runway types</div>
+          <div class="csig csig-g">Configurable cascade branching</div>
+          <div class="csig csig-g">Replayable and editable library</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cn cn-g">02</div>
+        <div class="ct">Live Facilitator Control</div>
+        <p class="cd">Real-time session runner. Inject events mid-session, pause for debrief, monitor every participant's decision path simultaneously. War room and individual views available.</p>
+        <div class="csigs">
+          <div class="csig csig-g">Live event injection mid-session</div>
+          <div class="csig csig-g">Per-participant decision tracking</div>
+          <div class="csig csig-g">War room and individual views</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cn cn-g">03</div>
+        <div class="ct">Automated Scoring</div>
+        <p class="cd">System-derived scoring across five dimensions — cascade awareness, priority accuracy, regulatory compliance, resource efficiency, and passenger impact. No self-reporting. No subjectivity.</p>
+        <div class="csigs">
+          <div class="csig csig-g">5 scored decision dimensions</div>
+          <div class="csig csig-g">Configurable dimension weighting</div>
+          <div class="csig csig-g">Benchmarked against industry norms</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cn cn-g">04</div>
+        <div class="ct">After Action Review</div>
+        <p class="cd">Every session ends with a detailed automated debrief. Decision patterns identified. Benchmark gaps surfaced. Recommended focus areas for the next session generated automatically.</p>
+        <div class="csigs">
+          <div class="csig csig-g">Automated post-session debrief report</div>
+          <div class="csig csig-g">Decision pattern gap analysis</div>
+          <div class="csig csig-g">Next-session recommendations</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cn cn-g">05</div>
+        <div class="ct">Team Benchmarking</div>
+        <p class="cd">Individual and cohort performance tracked across sessions. Identify decision gaps by role, shift, and experience level. Progress measurable and reportable to leadership.</p>
+        <div class="csigs">
+          <div class="csig csig-g">Cross-session performance tracking</div>
+          <div class="csig csig-g">Role and shift-level gap analysis</div>
+          <div class="csig csig-g">Exportable progress reports</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cn cn-g">06</div>
+        <div class="ct">Executive War Games</div>
+        <p class="cd">Strategic-level exercises for directors and senior leadership. Network-wide scenario planning. Stress-test recovery frameworks and crisis governance before the next major event.</p>
+        <div class="csigs">
+          <div class="csig csig-g">C-suite and director-level facilitation</div>
+          <div class="csig csig-g">Network-wide strategic scenarios</div>
+          <div class="csig csig-g">Benchmarked against McKinsey/BCG war games</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:48px" class="fu">
+      <div class="two">
+        <div>
+          <div class="ey" style="margin-bottom:12px"><div class="el"></div>The Shepherd Flywheel</div>
+          <p style="font-size:14px;color:var(--mu);line-height:1.75;margin-bottom:24px">Every session feeds the next. Historical data becomes scenarios. Scenarios produce decisions. Decisions produce permanent learning.</p>
+          <div class="fw">
+            <div class="fws"><div class="fwn">1</div><div class="fwt">Scenario Design</div><div class="fwb">Built from real event data</div></div>
+            <div class="fws"><div class="fwn">2</div><div class="fwt">Live Session</div><div class="fwb">Teams decide under time pressure</div></div>
+            <div class="fws"><div class="fwn">3</div><div class="fwt">Decision Capture</div><div class="fwb">Every decision scored vs benchmark</div></div>
+            <div class="fws"><div class="fwn">4</div><div class="fwt">After Action Review</div><div class="fwb">Structured debrief with data</div></div>
+            <div class="fws"><div class="fwn">5</div><div class="fwt">Playbook Update</div><div class="fwb">Learning embedded in procedures</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="ey" style="margin-bottom:12px"><div class="el"></div>Scoring Example</div>
+          <div class="sc">
+            <div class="sch"><span class="sct">Session WG-003 · Operations Team Alpha</span><span class="sco">7.4 / 10</span></div>
+            <div class="sdim"><div class="dn">Cascade Awareness</div><div class="dbt"><div class="dbf" style="width:62%"></div></div><div class="dsc">6.2</div></div>
+            <div class="sdim"><div class="dn">Priority Accuracy</div><div class="dbt"><div class="dbf" style="width:80%"></div></div><div class="dsc">8.0</div></div>
+            <div class="sdim"><div class="dn">Regulatory Compliance</div><div class="dbt"><div class="dbf" style="width:90%"></div></div><div class="dsc">9.0</div></div>
+            <div class="sdim"><div class="dn">Resource Efficiency</div><div class="dbt"><div class="dbf" style="width:74%"></div></div><div class="dsc">7.4</div></div>
+            <div class="sdim"><div class="dn">Passenger Impact</div><div class="dbt"><div class="dbf" style="width:68%"></div></div><div class="dsc">6.8</div></div>
+          </div>
+          <div style="margin-top:12px;padding:14px;background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.15);border-radius:2px">
+            <div style="font-family:var(--mo);font-size:8px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:7px">Insight — Session WG-003</div>
+            <p style="font-size:12px;color:var(--mu);line-height:1.6">Cascade awareness 18% below benchmark. Pattern: under-protected connection clusters when the primary disruption was crew-origin. Recommended: crew-cascade scenario block in next session.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dtag fu">War Games · Trains · Scores · Reviews · Builds muscle memory</div>
+  </div>
+</section>
+
+<!-- BENCHMARKS -->
+<section id="benchmarks">
+  <div class="wrap">
+    <div class="ey fu"><div class="el"></div>Market Benchmarks</div>
+    <div class="h2 fu d1">Two proven training models.<br><em>Shepherd is both.</em></div>
+    <div class="lead fu d2">Military war games and pilot simulation have solved the decision training problem in adjacent domains for decades. Shepherd applies both methodologies to the aviation operations layer — the only platform built for this purpose.</div>
+    <div class="bench fu d1">
+      <div class="bc bc-bl">
+        <div class="blbl">Military War Games</div>
+        <div class="btit">Strategic Decision Training</div>
+        <div class="brule"></div>
+        <div class="bul"><div class="bd-m"></div>Train commanders for high-stakes decisions under time pressure</div>
+        <div class="bul"><div class="bd-m"></div>Scenario exercises replicate real conflict conditions</div>
+        <div class="bul"><div class="bd-m"></div>After-action reviews embed institutional learning</div>
+        <div class="bul"><div class="bd-m"></div>Repeated simulation builds decision muscle memory</div>
+        <div class="bul"><div class="bd-m"></div>Outcomes measured against doctrine and optimal responses</div>
+        <div class="bbot"><div class="bbot-lo">Adopted by every modern military. Not yet by aviation.</div></div>
+      </div>
+      <div class="bc bc-gr">
+        <div class="blbl">Pilot Simulation</div>
+        <div class="btit">Regulated Skills Training</div>
+        <div class="brule"></div>
+        <div class="bul"><div class="bd-m"></div>Mandatory simulation hours for every commercial pilot globally</div>
+        <div class="bul"><div class="bd-m"></div>Full-motion Level D simulators replicate exact aircraft behaviour</div>
+        <div class="bul"><div class="bd-m"></div>Emergency scenarios practised until response is instinctive</div>
+        <div class="bul"><div class="bd-m"></div>Performance scored against regulatory standards</div>
+        <div class="bul"><div class="bd-m"></div>Recurrent training maintains decision quality over time</div>
+        <div class="bbot"><div class="bbot-lo">The gold standard for high-stakes decision training.</div></div>
+      </div>
+      <div class="bc bc-go bc-hi">
+        <div class="blbl blbl-g">Shepherd</div>
+        <div class="btit btit-g">Operations Decision Training</div>
+        <div class="brule"></div>
+        <div class="bul"><div class="bd-g"></div>Applies both methodologies to aviation operations teams</div>
+        <div class="bul"><div class="bd-g"></div>Scenario exercises replicate real disruption conditions with live injects</div>
+        <div class="bul"><div class="bd-g"></div>After Action Review embeds learning from every session</div>
+        <div class="bul"><div class="bd-g"></div>Scored decisions build recovery instinct across the whole team</div>
+        <div class="bul"><div class="bd-g"></div>Real-time intelligence layer prevents the need to make them</div>
+        <div class="bbot"><div class="bbot-hi">War games rigour. Simulator methodology. Aviation operations.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO -->
+<section id="who">
+  <div class="wrap">
+    <div class="ey fu"><div class="el"></div>Who Uses Shepherd</div>
+    <div class="h2 fu d1">Designed for the full<br><em>airline workforce.</em></div>
+    <div class="lead fu d2">The decision gap exists across every team that interfaces with disruption. The intelligence gap affects every team that needs situational awareness. Shepherd is built for both.</div>
+    <div class="tier-grid fu d1">
+      <div class="tc">
+        <div class="tlbl">Tier 1</div>
+        <div class="tnm">Operations Core</div>
+        <div class="tdsc">Teams making live disruption decisions under pressure</div>
+        <div class="trule"></div>
+        <div class="bul"><div class="bd-g"></div>Network operations teams</div>
+        <div class="bul"><div class="bd-g"></div>Crew control and scheduling leads</div>
+        <div class="bul"><div class="bd-g"></div>Ground operations duty managers</div>
+        <div class="bul"><div class="bd-g"></div>Airport operations coordinators</div>
+      </div>
+      <div class="tc">
+        <div class="tlbl">Tier 2</div>
+        <div class="tnm">Operations Management</div>
+        <div class="tdsc">Leaders who set strategy and own recovery performance</div>
+        <div class="trule"></div>
+        <div class="bul"><div class="bd-g"></div>Head of Operations Control</div>
+        <div class="bul"><div class="bd-g"></div>VP / Director of Operations</div>
+        <div class="bul"><div class="bd-g"></div>Station and airport general managers</div>
+        <div class="bul"><div class="bd-g"></div>Training and competency managers</div>
+      </div>
+      <div class="tc">
+        <div class="tlbl">Tier 3</div>
+        <div class="tnm">Customer-Facing & Frontline</div>
+        <div class="tdsc">Staff carrying out recovery with disrupted passengers</div>
+        <div class="trule"></div>
+        <div class="bul"><div class="bd-g"></div>Gate and check-in agents</div>
+        <div class="bul"><div class="bd-g"></div>Passenger service supervisors</div>
+        <div class="bul"><div class="bd-g"></div>Customer experience leads</div>
+        <div class="bul"><div class="bd-g"></div>Contact centre disruption teams</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CREDENTIALS -->
+<section id="credentials">
+  <div class="wrap">
+    <div class="ey fu"><div class="el"></div>Credentials</div>
+    <div class="h2 fu d1">Not an academic product.<br><em>Built from inside the problem.</em></div>
+    <div class="cred-grid fu d1">
+      <div class="cred-c">
+        <div class="cred-sup">Operational Origin</div>
+        <div class="cred-t">Founded by a former BA Disruptions Product Owner — who was in the room when it happened</div>
+        <div class="cred-rule"></div>
+        <div class="cred-b">
+          <p>Owned the Heathrow passenger disruption management product at British Airways. Responsible for the tools, processes and decisions governing how thousands of disrupted passengers were managed every day.</p>
+          <p>Was in the room during the May 2017 global IT outage — one of the most significant operational disruption events in British Airways history. Shepherd was conceived inside the disruption events it is designed to prevent.</p>
+        </div>
+      </div>
+      <div class="cred-c">
+        <div class="cred-sup">Industry Validation</div>
+        <div class="cred-t">The founding team's predecessor project was selected for IATA accelerate@iata</div>
+        <div class="cred-rule"></div>
+        <div class="cred-b">
+          <p>The founding team's predecessor disruption intelligence project was selected for the IATA accelerate@iata programme — a competitive cohort of the highest-potential aviation startups globally.</p>
+          <p>Category validation: Navi AI's recent $6.7M raise from United Airlines Ventures confirmed investor confidence in AI-powered operations intelligence tools. Shepherd owns the decision-making layer Navi doesn't.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section id="closing">
+  <div class="cglow"></div>
+  <div class="wrap">
+    <div class="ch fu">The disruption gap<br>is the opportunity.</div>
+    <div class="csub fu d1">Two products. One mission. Close the intelligence gap that lets disruptions cascade undetected, and the decision gap that makes them cost more than they should.</div>
+    <div class="fu d2">
+      <div class="cpills">
+        <div class="cpill"><div class="cpill-n">$60B+</div><div class="cpill-l">Annual disruption cost</div></div>
+        <div class="cpill"><div class="cpill-n">Zero</div><div class="cpill-l">Tools that train decision quality</div></div>
+        <div class="cpill"><div class="cpill-n">2</div><div class="cpill-l">Products. One platform.</div></div>
+      </div>
+    </div>
+    <div class="fu d3"><a href="mailto:hello@shephr.io" class="btn">Request a Briefing</a></div>
+    <div class="cfine fu d4">Shepherd · Disruption Intelligence · hello@shephr.io</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="nd" style="width:6px;height:6px"></div>
+    <span style="font-family:var(--mo);font-size:10px;color:var(--mu);letter-spacing:.18em;text-transform:uppercase">Shepherd</span>
+    <span class="fcp" style="margin-left:14px">© 2026 Shepherd. Disruption Intelligence for Aviation.</span>
+  </div>
+  <span class="fcp">Confidential · hello@shephr.io</span>
+</footer>
+
+<script>
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in');});
+  },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.fu').forEach(function(el){obs.observe(el);});
+  setTimeout(function(){
+    document.querySelectorAll('#hero .fu').forEach(function(el){el.classList.add('in');});
+  },80);
+</script>
+</body>
+</html>
