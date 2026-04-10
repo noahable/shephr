@@ -538,6 +538,42 @@
 </footer>
  
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  var SC=[
+    {t:'SESSION-WG-003 / CREW-LIMITS / TRIAGE',l:'⚡ Inject — T+14 min',x:'Delay cascade has pushed 4 crews into their final 2 hours simultaneously. Standby pool: 2 crews. Must select 2 of 4 FTL-affected flights. BA721 (82 connections, 4h20), BA722 (12 connections, 1h45), BA723 (45 connections, crew at dest), BA724 (last service, 180 pax).',o:[{k:'A',t:'Allocate to BA721 (highest connection risk) and BA724 (no alternative). Cancel BA722 and BA723.',op:true},{k:'B',t:'Allocate to longest-haul BA721 and BA723 by flight time.',op:false},{k:'C',t:'Allocate to easiest-to-operate flights to maximise success probability.',op:false}]},
+    {t:'SESSION-WG-003 / CONNECTION-CASCADE / RECOGNITION',l:'⚡ Inject — T+08 min',x:'Inbound BA2201 tracking 47 min late. 82 passengers have connections in next 90 min. 14 on 3 long-haul services with hard cut-off times. Turnaround: 35 min minimum.',o:[{k:'A',t:'Protect 14 long-haul connections immediately. Fast-track BA2201 turnaround. Brief customer teams on 68 short-haul impacts.',op:true},{k:'B',t:'Wait for confirmed arrival time before making connection protection decisions.',op:false},{k:'C',t:'Protect all 82 connections equally. Hold all 3 long-haul services.',op:false}]},
+    {t:'SESSION-WG-003 / RUNWAY-CLOSURE / TRIAGE',l:'⚡ Inject — T+03 min',x:'Vehicle incursion on primary runway. Closed. 3 aircraft on final approach (8nm, 12nm, 19nm). Closure: 30 min to 4 hours. 8 aircraft in holding stack, varying fuel states.',o:[{k:'A',t:'Go-around all 3 final approach aircraft. Coordinate divert routing. Notify destination welfare teams.',op:true},{k:'B',t:'Go-around 8nm aircraft only. Others hold pending clearance timeline.',op:false},{k:'C',t:'ATC responsibility — monitor and stand by for ATC instruction.',op:false}]},
+    {t:'SESSION-WG-003 / GROUND-STOP / RECOVERY',l:'⚡ Inject — T+32 min',x:'ATFM ground stop lifted. 6 aircraft held 2h20. Crew rest compromised on 2 services. 340 passengers need rebooking or welfare. 4 departure slots available next 90 min.',o:[{k:'A',t:'Prioritise by passenger impact: highest connection density first. Fresh crew for 2 services. Welfare protocol for 340 passengers.',op:true},{k:'B',t:'Operate in original sequence to minimise crew plan disruption.',op:false},{k:'C',t:'Operate 4 shortest sectors first to clear stand queue.',op:false}]}
+  ];
+ 
+  function setS(i){
+    document.querySelectorAll('.stab').forEach(function(t,j){t.classList.toggle('on',i===j);});
+    var s=SC[i];
+    document.getElementById('stbar').textContent=s.t;
+    document.getElementById('slbl').textContent=s.l;
+    document.getElementById('stxt').textContent=s.x;
+    document.getElementById('sopts').innerHTML=s.o.map(function(o){return '<div class="opt'+(o.op?' op':'')+'"><span class="ok">'+o.k+'</span><span class="ot">'+o.t+'</span>'+(o.op?'<span class="obg">Optimal</span>':'')+'</div>';}).join('');
+  }
+ 
+  function switchTab(t){
+    document.getElementById('panel-i').classList.toggle('on',t==='i');
+    document.getElementById('panel-s').classList.toggle('on',t==='s');
+    document.querySelectorAll('.nt').forEach(function(n){
+      n.classList.remove('ai','as');
+      var txt=n.textContent.trim().toLowerCase();
+      if(txt.indexOf('intel')>-1&&t==='i')n.classList.add('ai');
+      if(txt.indexOf('war')>-1&&t==='s')n.classList.add('as');
+    });
+    document.querySelectorAll('.htab').forEach(function(n){
+      n.classList.remove('on');
+      if(n.classList.contains('ti')&&t==='i')n.classList.add('on');
+      if(n.classList.contains('ts')&&t==='s')n.classList.add('on');
+    });
+    setTimeout(function(){
+      var first=document.querySelector('#panel-'+t+'.on .sec');
+      if(first)first.scrollIntoView({behavior:'smooth',block:'start'});
+    },50);
+  }
+</script><script>
   const SC=[
     {t:'SESSION-WG-003 / CREW-LIMITS / TRIAGE',l:'⚡ Inject — T+14 min',x:'Delay cascade has pushed 4 crews into their final 2 hours simultaneously. Standby pool: 2 crews. Must select 2 of 4 FTL-affected flights. BA721 (82 connections, 4h20), BA722 (12 connections, 1h45), BA723 (45 connections, crew at dest), BA724 (last service, 180 pax).',o:[{k:'A',t:'Allocate to BA721 (highest connection risk) and BA724 (no alternative). Cancel BA722 and BA723.',op:true},{k:'B',t:'Allocate to longest-haul BA721 and BA723 by flight time.',op:false},{k:'C',t:'Allocate to easiest-to-operate flights to maximise success probability.',op:false}]},
     {t:'SESSION-WG-003 / CONNECTION-CASCADE / RECOGNITION',l:'⚡ Inject — T+08 min',x:'Inbound BA2201 tracking 47 min late. 82 passengers have connections in next 90 min. 14 on 3 long-haul services with hard cut-off times. Turnaround: 35 min minimum.',o:[{k:'A',t:'Protect 14 long-haul connections immediately. Fast-track BA2201 turnaround. Brief customer teams on 68 short-haul impacts.',op:true},{k:'B',t:'Wait for confirmed arrival time before making connection protection decisions.',op:false},{k:'C',t:'Protect all 82 connections equally. Hold all 3 long-haul services.',op:false}]},
@@ -554,7 +590,7 @@
     document.getElementById('sopts').innerHTML=s.o.map(o=>`<div class="opt${o.op?' op':''}"><span class="ok">${o.k}</span><span class="ot">${o.t}</span>${o.op?'<span class="obg">Optimal</span>':''}</div>`).join('');
   }
  
-  function switchTab(t){
+  window.switchTab=function(t){
     document.getElementById('panel-i').classList.toggle('on',t==='i');
     document.getElementById('panel-s').classList.toggle('on',t==='s');
     document.querySelectorAll('.nt').forEach(n=>{
