@@ -4,1440 +4,572 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shepherd — Disruption Intelligence for Aviation</title>
-  <meta name="description" content="When crew constraints, connection clusters, and slot windows collide — Shepherd builds the decision-making muscle memory that keeps operations teams ahead of the cascade." />
+  <meta name="description" content="Shepherd gives aviation operations teams real-time disruption intelligence and simulation-based war games training to build the decision muscle memory to act on it." />
   <meta property="og:title" content="Shepherd — Disruption Intelligence for Aviation" />
-  <meta property="og:description" content="War games simulation and disruption intelligence for airline operations teams." />
+  <meta property="og:description" content="Live disruption intelligence and war games simulation for aviation operations teams." />
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@300;400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:        #07090f;
-      --surface:   #0c0f1a;
-      --surface2:  #0f1220;
-      --border:    #161d2e;
-      --border2:   #1e2840;
-      --gold:      #c9a84c;
-      --gold-dim:  #8a6e2f;
-      --gold-glow: rgba(201,168,76,0.12);
-      --blue:      #4a9eff;
-      --blue-dim:  rgba(74,158,255,0.08);
-      --white:     #d8e0f0;
-      --muted:     #7a869e;
-      --dim:       #3d4a60;
-      --serif:     'Playfair Display', Georgia, serif;
-      --mono:      'DM Mono', monospace;
-      --sans:      'Sora', system-ui, sans-serif;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--white);
-      font-family: var(--sans);
-      font-size: 15px;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
-
-    /* ── NOISE OVERLAY ── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.4;
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 56px;
-      background: rgba(7,9,15,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 48px;
-      z-index: 100;
-    }
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-    .nav-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--gold);
-      box-shadow: 0 0 10px var(--gold), 0 0 20px rgba(201,168,76,0.3);
-      animation: pulse-dot 3s ease-in-out infinite;
-    }
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--gold), 0 0 20px rgba(201,168,76,0.3); }
-      50% { opacity: 0.7; box-shadow: 0 0 6px var(--gold); }
-    }
-    .nav-wordmark {
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--gold);
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-    }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 36px;
-      list-style: none;
-    }
-    .nav-links a {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-      text-decoration: none;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--white); }
-    .nav-cta {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--gold) !important;
-      border: 1px solid var(--gold-dim);
-      padding: 7px 16px;
-      border-radius: 2px;
-      transition: background 0.2s, border-color 0.2s !important;
-    }
-    .nav-cta:hover {
-      background: var(--gold-glow) !important;
-      border-color: var(--gold) !important;
-    }
-
-    /* ── SECTIONS ── */
-    section {
-      position: relative;
-      z-index: 1;
-    }
-
-    .container {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 48px;
-    }
-
-    /* ── HERO ── */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding-top: 56px;
-      overflow: hidden;
-    }
-    .hero-grid-bg {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(74,158,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(74,158,255,0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
-    }
-    .hero-glow {
-      position: absolute;
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 400px;
-      background: radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-inner {
-      padding: 80px 0 120px;
-      max-width: 760px;
-    }
-    .hero-eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 32px;
-    }
-    .eyebrow-line {
-      width: 32px;
-      height: 1px;
-      background: var(--gold);
-    }
-    .eyebrow-text {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--gold);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-    }
-    .hero-headline {
-      font-family: var(--serif);
-      font-size: clamp(40px, 5.5vw, 72px);
-      font-weight: 500;
-      line-height: 1.1;
-      color: var(--white);
-      margin-bottom: 28px;
-      letter-spacing: -0.01em;
-    }
-    .hero-headline em {
-      font-style: italic;
-      color: var(--gold);
-    }
-    .hero-sub {
-      font-size: 17px;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.7;
-      max-width: 580px;
-      margin-bottom: 48px;
-    }
-    .hero-actions {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .btn-primary {
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--bg);
-      background: var(--gold);
-      border: none;
-      padding: 14px 28px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      border-radius: 2px;
-      transition: opacity 0.2s, transform 0.2s;
-    }
-    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
-    .btn-ghost {
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      background: transparent;
-      border: 1px solid var(--border2);
-      padding: 14px 28px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      border-radius: 2px;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .btn-ghost:hover { border-color: var(--muted); color: var(--white); }
-    .hero-stat-strip {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      border-top: 1px solid var(--border);
-      background: rgba(12,15,26,0.7);
-      backdrop-filter: blur(8px);
-      display: flex;
-    }
-    .hero-stat {
-      flex: 1;
-      padding: 20px 32px;
-      border-right: 1px solid var(--border);
-    }
-    .hero-stat:last-child { border-right: none; }
-    .stat-num {
-      font-family: var(--mono);
-      font-size: 22px;
-      color: var(--gold);
-      font-weight: 500;
-      letter-spacing: -0.02em;
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-    .stat-label {
-      font-size: 11px;
-      color: var(--dim);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-family: var(--mono);
-    }
-
-    /* ── PROBLEM STATEMENT ── */
-    #problem {
-      padding: 120px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .section-eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .section-eyebrow span {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--gold-dim);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-    }
-    .eyebrow-tick {
-      width: 20px; height: 1px; background: var(--gold-dim);
-    }
-    .section-title {
-      font-family: var(--serif);
-      font-size: clamp(28px, 3.5vw, 48px);
-      font-weight: 500;
-      line-height: 1.15;
-      color: var(--white);
-      margin-bottom: 24px;
-    }
-    .section-title em { font-style: italic; color: var(--gold); }
-    .section-body {
-      font-size: 16px;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.75;
-      max-width: 600px;
-    }
-    .problem-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
-    .problem-right {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .cascade-item {
-      padding: 20px 24px;
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      background: var(--surface);
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.3s;
-    }
-    .cascade-item::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 2px;
-      background: var(--gold);
-      transform: scaleY(0);
-      transform-origin: top;
-      transition: transform 0.4s;
-    }
-    .cascade-item:hover { border-color: var(--border2); }
-    .cascade-item:hover::before { transform: scaleY(1); }
-    .cascade-label {
-      font-family: var(--mono);
-      font-size: 9px;
-      color: var(--gold-dim);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-    .cascade-text {
-      font-size: 14px;
-      color: var(--white);
-      font-weight: 400;
-      line-height: 1.5;
-    }
-    .cascade-arrow {
-      text-align: center;
-      padding: 4px 0;
-      color: var(--dim);
-      font-size: 16px;
-    }
-
-    /* ── HOW IT WORKS ── */
-    #how {
-      padding: 120px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .how-header {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: end;
-      margin-bottom: 72px;
-    }
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .feature-cell {
-      background: var(--surface);
-      padding: 36px 32px;
-      position: relative;
-      transition: background 0.3s;
-    }
-    .feature-cell:hover { background: var(--surface2); }
-    .feature-num {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--dim);
-      letter-spacing: 0.1em;
-      margin-bottom: 20px;
-    }
-    .feature-icon {
-      width: 36px;
-      height: 36px;
-      margin-bottom: 16px;
-    }
-    .feature-title {
-      font-family: var(--serif);
-      font-size: 18px;
-      font-weight: 500;
-      color: var(--white);
-      margin-bottom: 10px;
-      line-height: 1.3;
-    }
-    .feature-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.65;
-      font-weight: 300;
-    }
-
-    /* ── SCENARIOS ── */
-    #scenarios {
-      padding: 120px 0;
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(180deg, var(--bg) 0%, var(--surface) 50%, var(--bg) 100%);
-    }
-    .scenarios-header {
-      text-align: center;
-      margin-bottom: 72px;
-    }
-    .scenarios-header .section-body {
-      margin: 0 auto;
-      text-align: center;
-    }
-    .scenario-tabs {
-      display: flex;
-      gap: 2px;
-      margin-bottom: 32px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      padding: 4px;
-    }
-    .scenario-tab {
-      flex: 1;
-      padding: 10px 16px;
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      border-radius: 1px;
-      transition: background 0.2s, color 0.2s;
-    }
-    .scenario-tab.active {
-      background: var(--surface2);
-      color: var(--gold);
-      border: 1px solid var(--border2);
-    }
-    .scenario-display {
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      background: var(--surface);
-      overflow: hidden;
-    }
-    .scenario-header-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 24px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
-    }
-    .scenario-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-    }
-    .scenario-dot.red { background: #ff4d4d; }
-    .scenario-dot.yellow { background: #ffb800; }
-    .scenario-dot.green { background: #36d68a; }
-    .scenario-title-bar {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--dim);
-      letter-spacing: 0.1em;
-      margin-left: 4px;
-    }
-    .scenario-body {
-      padding: 32px 24px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-    }
-    .scenario-inject {
-      padding: 20px;
-      background: rgba(255,72,72,0.04);
-      border: 1px solid rgba(255,72,72,0.12);
-      border-radius: 2px;
-    }
-    .inject-label {
-      font-family: var(--mono);
-      font-size: 9px;
-      color: #ff6b6b;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    .inject-text {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-    .scenario-options {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .option-item {
-      padding: 12px 16px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      cursor: pointer;
-      transition: border-color 0.2s;
-    }
-    .option-item:hover { border-color: var(--border2); }
-    .option-item.optimal { border-color: rgba(201,168,76,0.3); background: rgba(201,168,76,0.04); }
-    .option-key {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--gold);
-      font-weight: 500;
-      flex-shrink: 0;
-      width: 16px;
-    }
-    .option-text {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-    .option-badge {
-      font-family: var(--mono);
-      font-size: 9px;
-      color: var(--gold);
-      background: var(--gold-glow);
-      border: 1px solid rgba(201,168,76,0.2);
-      padding: 2px 7px;
-      border-radius: 1px;
-      margin-left: auto;
-      flex-shrink: 0;
-      align-self: center;
-    }
-
-    /* ── AAR ── */
-    #aar {
-      padding: 120px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .aar-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: start;
-    }
-    .score-card {
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      background: var(--surface);
-      overflow: hidden;
-    }
-    .score-header {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .score-title {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-    .score-overall {
-      font-family: var(--mono);
-      font-size: 22px;
-      color: var(--gold);
-      font-weight: 500;
-    }
-    .score-dimension {
-      padding: 16px 24px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .score-dimension:last-child { border-bottom: none; }
-    .dim-name {
-      font-size: 13px;
-      color: var(--white);
-      width: 180px;
-      flex-shrink: 0;
-    }
-    .dim-bar-track {
-      flex: 1;
-      height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .dim-bar-fill {
-      height: 100%;
-      background: var(--gold);
-      border-radius: 2px;
-      transition: width 1s ease-out;
-    }
-    .dim-score {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--gold);
-      width: 40px;
-      text-align: right;
-      flex-shrink: 0;
-    }
-    .insight-block {
-      margin-top: 24px;
-      padding: 20px;
-      background: rgba(201,168,76,0.04);
-      border: 1px solid rgba(201,168,76,0.15);
-      border-radius: 2px;
-    }
-    .insight-label {
-      font-family: var(--mono);
-      font-size: 9px;
-      color: var(--gold);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    .insight-text {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-
-    /* ── PROOF ── */
-    #proof {
-      padding: 120px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .proof-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      margin-top: 60px;
-    }
-    .proof-cell {
-      background: var(--surface);
-      padding: 40px 32px;
-      transition: background 0.3s;
-    }
-    .proof-cell:hover { background: var(--surface2); }
-    .proof-quote {
-      font-family: var(--serif);
-      font-size: 16px;
-      font-style: italic;
-      color: var(--white);
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-    .proof-source {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--gold-dim);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-    .credential-strip {
-      margin-top: 60px;
-      display: flex;
-      gap: 32px;
-      align-items: stretch;
-    }
-    .credential-item {
-      flex: 1;
-      padding: 28px 32px;
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      background: var(--surface);
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-    }
-    .credential-icon {
-      width: 36px;
-      height: 36px;
-      background: var(--gold-glow);
-      border: 1px solid rgba(201,168,76,0.2);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 14px;
-    }
-    .credential-title {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--gold);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-    .credential-body {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* ── WHO ── */
-    #who {
-      padding: 120px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .who-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      margin-top: 60px;
-    }
-    .who-card {
-      padding: 36px;
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      background: var(--surface);
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.3s;
-    }
-    .who-card::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .who-card:hover { border-color: var(--border2); }
-    .who-card:hover::after { opacity: 1; }
-    .who-role {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--gold);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-    .who-title {
-      font-family: var(--serif);
-      font-size: 20px;
-      font-weight: 500;
-      color: var(--white);
-      margin-bottom: 12px;
-    }
-    .who-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.65;
-      font-weight: 300;
-    }
-    .who-bullets {
-      margin-top: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .who-bullet {
-      display: flex;
-      gap: 10px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .who-bullet::before {
-      content: '—';
-      color: var(--gold-dim);
-      flex-shrink: 0;
-    }
-
-    /* ── CTA ── */
-    #cta {
-      padding: 140px 0;
-    }
-    .cta-inner {
-      text-align: center;
-      max-width: 640px;
-      margin: 0 auto;
-    }
-    .cta-inner .section-body {
-      max-width: 480px;
-      margin: 0 auto 48px;
-      text-align: center;
-    }
-    .cta-actions {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-    }
-    .cta-fine {
-      margin-top: 24px;
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--dim);
-      letter-spacing: 0.08em;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 40px 0;
-      position: relative;
-      z-index: 1;
-    }
-    .footer-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .footer-brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .footer-copy {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--dim);
-      letter-spacing: 0.08em;
-    }
-    .footer-links {
-      display: flex;
-      gap: 32px;
-      list-style: none;
-    }
-    .footer-links a {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--dim);
-      text-decoration: none;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .footer-links a:hover { color: var(--muted); }
-
-    /* ── ANIMATIONS ── */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .fade-up-delay-1 { transition-delay: 0.1s; }
-    .fade-up-delay-2 { transition-delay: 0.2s; }
-    .fade-up-delay-3 { transition-delay: 0.3s; }
-    .fade-up-delay-4 { transition-delay: 0.4s; }
-
-    /* ── MOBILE ── */
-    @media (max-width: 768px) {
-      .container { padding: 0 24px; }
-      nav { padding: 0 24px; }
-      .nav-links { display: none; }
-      .hero-inner { padding: 60px 0 100px; }
-      .hero-stat-strip { position: static; margin-top: 60px; flex-wrap: wrap; }
-      .hero-stat { min-width: 50%; }
-      .problem-layout,
-      .how-header,
-      .aar-layout { grid-template-columns: 1fr; gap: 48px; }
-      .feature-grid { grid-template-columns: 1fr; }
-      .proof-grid { grid-template-columns: 1fr; }
-      .who-grid { grid-template-columns: 1fr; }
-      .credential-strip { flex-direction: column; }
-      .scenario-body { grid-template-columns: 1fr; }
-      .scenario-tabs { flex-wrap: wrap; }
-      .cta-actions { flex-direction: column; align-items: center; }
+      --bg:#07090f;--s1:#0c0f1a;--s2:#0f1220;--bd:#161d2e;--bd2:#1e2840;
+      --gold:#c9a84c;--gdim:#8a6e2f;--gg:rgba(201,168,76,0.1);
+      --blue:#4a9eff;--bdim:rgba(74,158,255,0.08);
+      --w:#d8e0f0;--mu:#7a869e;--di:#3d4a60;
+      --ser:'Playfair Display',Georgia,serif;
+      --mo:'DM Mono',monospace;
+      --sa:'Sora',system-ui,sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--w);font-family:var(--sa);font-size:15px;line-height:1.6;overflow-x:hidden}
+    ::-webkit-scrollbar{width:3px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--di);border-radius:2px}
+    a{text-decoration:none}
+    .w{max-width:1080px;margin:0 auto;padding:0 36px}
+ 
+    /* NAV */
+    nav{
+      position:sticky;top:0;height:54px;
+      background:rgba(7,9,15,0.97);
+      border-bottom:1px solid var(--bd);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 36px;z-index:100;
+    }
+    .nb{display:flex;align-items:center;gap:9px}
+    .nd{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:pd 3s ease-in-out infinite}
+    @keyframes pd{0%,100%{opacity:1}50%{opacity:.55}}
+    .nw{font-family:var(--mo);font-size:11px;color:var(--gold);letter-spacing:.22em;text-transform:uppercase}
+    .nl{display:flex;align-items:center;gap:6px;list-style:none}
+    .nt{font-family:var(--mo);font-size:10px;padding:7px 18px;border-radius:2px;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--bd);background:transparent;color:var(--mu);transition:all .2s}
+    .nt.ai{color:var(--blue);border-color:rgba(74,158,255,.35);background:rgba(74,158,255,.06)}
+    .nt.as{color:var(--gold);border-color:rgba(201,168,76,.35);background:var(--gg)}
+    .nt:hover{color:var(--w);border-color:var(--bd2)}
+    .ncta{font-family:var(--mo);font-size:10px;color:var(--gold);border:1px solid var(--gdim);padding:7px 16px;border-radius:2px;letter-spacing:.1em;text-transform:uppercase;transition:background .2s}
+    .ncta:hover{background:var(--gg)}
+ 
+    /* HERO */
+    .hero{padding:80px 0 60px;border-bottom:1px solid var(--bd);position:relative;overflow:hidden}
+    .hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(74,158,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(74,158,255,.025) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse 90% 70% at 50% 50%,black 20%,transparent 100%)}
+    .hero-in{position:relative;text-align:center;max-width:720px;margin:0 auto}
+    .htag{font-family:var(--mo);font-size:10px;color:var(--gold);letter-spacing:.18em;text-transform:uppercase;margin-bottom:24px;opacity:.85}
+    .hh1{font-family:var(--ser);font-size:clamp(38px,5vw,64px);font-weight:500;line-height:1.1;color:var(--w);margin-bottom:20px;letter-spacing:-.02em}
+    .hh1 em{font-style:italic;color:var(--gold)}
+    .hsub{font-size:16px;font-weight:300;color:var(--mu);line-height:1.75;max-width:580px;margin:0 auto 40px}
+    .htabs{display:inline-flex;gap:3px;background:var(--s1);border:1px solid var(--bd);border-radius:3px;padding:4px}
+    .htab{font-family:var(--mo);font-size:11px;padding:11px 36px;border-radius:2px;cursor:pointer;letter-spacing:.12em;text-transform:uppercase;border:none;background:transparent;transition:all .25s}
+    .htab.ti{color:var(--blue)}.htab.ts{color:var(--gold)}
+    .htab.ti.on{background:rgba(74,158,255,.1);border:1px solid rgba(74,158,255,.25)}
+    .htab.ts.on{background:var(--gg);border:1px solid rgba(201,168,76,.25)}
+    .htab:not(.on){color:var(--di)}.htab:hover:not(.on){color:var(--mu)}
+ 
+    .panel{display:none}.panel.on{display:block}
+ 
+    /* SHARED */
+    .pill{display:inline-flex;align-items:center;gap:7px;font-family:var(--mo);font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:5px 12px;border-radius:2px;margin-bottom:18px}
+    .pill.i{color:var(--blue);background:var(--bdim);border:1px solid rgba(74,158,255,.18)}
+    .pill.s{color:var(--gold);background:var(--gg);border:1px solid rgba(201,168,76,.18)}
+    .pdot{width:4px;height:4px;border-radius:50%}
+    .pill.i .pdot{background:var(--blue)}.pill.s .pdot{background:var(--gold)}
+    .sec{padding:80px 0;border-bottom:1px solid var(--bd)}
+    .sec-last{padding:80px 0}
+    .ey{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+    .ey span{font-family:var(--mo);font-size:9px;letter-spacing:.18em;text-transform:uppercase}
+    .ey span.i{color:var(--blue);opacity:.75}
+    .ey span.s{color:var(--gold);opacity:.75}
+    .tk{width:16px;height:1px}
+    .tki{background:var(--blue);opacity:.4}.tks{background:var(--gold);opacity:.4}
+    .sh2{font-family:var(--ser);font-size:clamp(24px,3vw,40px);font-weight:500;line-height:1.15;color:var(--w);margin-bottom:20px}
+    .sh2 em{font-style:italic}.sh2 em.i{color:var(--blue)}.sh2 em.s{color:var(--gold)}
+    .sb{font-size:15px;font-weight:300;color:var(--mu);line-height:1.75;max-width:560px}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+    .four{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--bd);border:1px solid var(--bd);border-radius:2px;overflow:hidden}
+    .six{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--bd);border:1px solid var(--bd);border-radius:2px;overflow:hidden}
+    .fc{background:var(--s1);padding:30px 26px;transition:background .25s}
+    .fc:hover{background:var(--s2)}
+    .fnum{font-family:var(--mo);font-size:9px;letter-spacing:.1em;margin-bottom:12px}
+    .fnum.i{color:var(--blue);opacity:.5}.fnum.s{color:var(--gold);opacity:.5}
+    .ftit{font-family:var(--ser);font-size:17px;font-weight:500;color:var(--w);margin-bottom:8px;line-height:1.3}
+    .fdsc{font-size:13px;color:var(--mu);line-height:1.65;font-weight:300}
+    .fsigs{margin-top:14px;display:flex;flex-direction:column;gap:5px}
+    .fsig{display:flex;gap:7px;font-family:var(--mo);font-size:10px;color:var(--di);align-items:center}
+    .fsig::before{content:'';width:3px;height:3px;border-radius:50%;flex-shrink:0}
+    .fsig.i::before{background:var(--blue);opacity:.5}
+    .fsig.s::before{background:var(--gold);opacity:.5}
+ 
+    /* DASHBOARD MOCK */
+    .dmock{border:1px solid var(--bd);border-radius:2px;background:var(--s1);overflow:hidden;margin-top:4px}
+    .dbar{display:flex;align-items:center;gap:7px;padding:10px 16px;border-bottom:1px solid var(--bd);background:var(--bg)}
+    .dd{width:6px;height:6px;border-radius:50%}
+    .dl{background:#36d68a;animation:lp 2s ease-in-out infinite}
+    @keyframes lp{0%,100%{opacity:1;box-shadow:0 0 5px #36d68a}50%{opacity:.35;box-shadow:none}}
+    .dw{background:#ffb800}.dc{background:#ff4d4d}
+    .dtit{font-family:var(--mo);font-size:9px;color:var(--di);letter-spacing:.09em;margin-left:3px}
+    .dtime{font-family:var(--mo);font-size:9px;color:var(--di);margin-left:auto}
+    .dbody{padding:10px;display:flex;flex-direction:column;gap:5px}
+    .dr{display:flex;align-items:center;gap:9px;padding:8px 11px;background:var(--s2);border:1px solid var(--bd);border-radius:2px}
+    .dr.al{border-color:rgba(255,77,77,.2);background:rgba(255,77,77,.04)}
+    .dr.wn{border-color:rgba(255,184,0,.2);background:rgba(255,184,0,.04)}
+    .ds{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+    .ds.g{background:#36d68a}.ds.a{background:#ffb800}.ds.r{background:#ff4d4d}
+    .dfl{font-family:var(--mo);font-size:11px;color:var(--w);font-weight:500;width:52px;flex-shrink:0}
+    .ddt{font-size:11px;color:var(--mu);flex:1}
+    .dbg{font-family:var(--mo);font-size:8px;padding:2px 7px;border-radius:1px;flex-shrink:0;letter-spacing:.07em;text-transform:uppercase}
+    .dbg.r{color:#ff6b6b;background:rgba(255,77,77,.1);border:1px solid rgba(255,77,77,.2)}
+    .dbg.a{color:#ffb800;background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.2)}
+    .dbg.b{color:var(--blue);background:var(--bdim);border:1px solid rgba(74,158,255,.2)}
+ 
+    /* AUDIENCE CARDS */
+    .aud{padding:16px;border:1px solid rgba(74,158,255,.15);border-radius:2px;background:rgba(74,158,255,.04);margin-bottom:10px}
+    .aud-t{font-family:var(--mo);font-size:9px;color:var(--blue);letter-spacing:.15em;text-transform:uppercase;margin-bottom:5px}
+    .aud-b{font-size:13px;color:var(--mu);line-height:1.55}
+ 
+    /* CREDENTIALS */
+    .cred{flex:1;padding:20px;border:1px solid var(--bd);border-radius:2px;background:var(--s1);display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+    .cion{width:28px;height:28px;background:var(--gg);border:1px solid rgba(201,168,76,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px}
+    .ctit{font-family:var(--mo);font-size:9px;color:var(--gold);letter-spacing:.11em;text-transform:uppercase;margin-bottom:5px}
+    .cbod{font-size:13px;color:var(--mu);line-height:1.6}
+ 
+    /* SCENARIO TABS */
+    .stabs{display:flex;gap:2px;margin-bottom:18px;background:var(--s1);border:1px solid var(--bd);border-radius:2px;padding:3px}
+    .stab{flex:1;padding:8px 10px;font-family:var(--mo);font-size:10px;letter-spacing:.09em;text-transform:uppercase;background:transparent;border:none;color:var(--mu);cursor:pointer;border-radius:1px;transition:all .2s}
+    .stab.on{background:var(--s2);color:var(--gold);border:1px solid var(--bd2)}
+    .sdisp{border:1px solid var(--bd);border-radius:2px;background:var(--s1);overflow:hidden}
+    .shbar{display:flex;align-items:center;gap:7px;padding:10px 16px;border-bottom:1px solid var(--bd);background:var(--bg)}
+    .dot3{width:6px;height:6px;border-radius:50%}
+    .dot3.r{background:#ff4d4d}.dot3.y{background:#ffb800}.dot3.g{background:#36d68a}
+    .stbar{font-family:var(--mo);font-size:9px;color:var(--di);letter-spacing:.08em;margin-left:3px}
+    .sbod{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .sinj{padding:14px;background:rgba(255,72,72,.04);border:1px solid rgba(255,72,72,.12);border-radius:2px}
+    .silb{font-family:var(--mo);font-size:8px;color:#ff6b6b;letter-spacing:.15em;text-transform:uppercase;margin-bottom:7px}
+    .sitx{font-size:12px;color:var(--mu);line-height:1.6}
+    .sopts{display:flex;flex-direction:column;gap:5px}
+    .opt{padding:10px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:2px;display:flex;gap:8px;align-items:flex-start;transition:border-color .2s}
+    .opt.op{border-color:rgba(201,168,76,.3);background:rgba(201,168,76,.04)}
+    .ok{font-family:var(--mo);font-size:10px;color:var(--gold);font-weight:500;flex-shrink:0;width:12px}
+    .ot{font-size:12px;color:var(--mu);line-height:1.45}
+    .obg{font-family:var(--mo);font-size:8px;color:var(--gold);background:var(--gg);border:1px solid rgba(201,168,76,.2);padding:1px 6px;border-radius:1px;margin-left:auto;flex-shrink:0;align-self:center}
+ 
+    /* SCORECARD */
+    .sc{border:1px solid var(--bd);border-radius:2px;background:var(--s1);overflow:hidden}
+    .sch{padding:14px 20px;border-bottom:1px solid var(--bd);background:var(--bg);display:flex;justify-content:space-between;align-items:center}
+    .sct{font-family:var(--mo);font-size:10px;color:var(--mu);letter-spacing:.09em;text-transform:uppercase}
+    .sco{font-family:var(--mo);font-size:20px;color:var(--gold);font-weight:500}
+    .sdim{padding:12px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px}
+    .sdim:last-child{border-bottom:none}
+    .dn{font-size:13px;color:var(--w);width:160px;flex-shrink:0}
+    .dbt{flex:1;height:2px;background:var(--bd);border-radius:1px;overflow:hidden}
+    .dbf{height:100%;background:var(--gold);border-radius:1px}
+    .dsc{font-family:var(--mo);font-size:11px;color:var(--gold);width:32px;text-align:right;flex-shrink:0}
+ 
+    /* CTA */
+    .cta-block{text-align:center;max-width:560px;margin:0 auto}
+    .cta-block .sh2{margin:0 auto 16px}
+    .cta-block .sb{margin:0 auto 36px;text-align:center}
+    .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .bp{font-family:var(--mo);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--bg);background:var(--gold);padding:13px 26px;border-radius:2px;transition:opacity .2s;display:inline-block}
+    .bp:hover{opacity:.85}
+    .bg2{font-family:var(--mo);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);border:1px solid var(--bd2);padding:13px 26px;border-radius:2px;transition:color .2s,border-color .2s;display:inline-block;cursor:pointer;background:transparent}
+    .bg2:hover{color:var(--w);border-color:var(--mu)}
+    .cta-fine{margin-top:18px;font-family:var(--mo);font-size:10px;color:var(--di);letter-spacing:.07em}
+ 
+    /* INSIGHT BLOCK */
+    .iblock{margin-top:20px;padding:16px;background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.15);border-radius:2px}
+    .ilbl{font-family:var(--mo);font-size:8px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:7px}
+    .itxt{font-size:13px;color:var(--mu);line-height:1.65}
+ 
+    /* BAR HIGHLIGHT */
+    .bar-hl{display:flex;gap:0;align-items:stretch;margin-bottom:10px}
+    .bar-line{width:2px;background:var(--gold);flex-shrink:0;border-radius:0}
+    .bar-content{padding:4px 14px}
+    .bar-title{font-family:var(--mo);font-size:9px;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+    .bar-body{font-size:13px;color:var(--mu);line-height:1.6}
+ 
+    /* FOOTER */
+    footer{border-top:1px solid var(--bd);padding:28px 0;position:relative;z-index:1}
+    .ftri{display:flex;align-items:center;justify-content:space-between}
+    .fcp{font-family:var(--mo);font-size:10px;color:var(--di);letter-spacing:.07em}
+    .fls{display:flex;gap:22px;list-style:none}
+    .fls a{font-family:var(--mo);font-size:10px;color:var(--di);text-decoration:none;letter-spacing:.07em;text-transform:uppercase;transition:color .2s}
+    .fls a:hover{color:var(--mu)}
+ 
+    /* MOBILE */
+    @media(max-width:768px){
+      .w{padding:0 20px}
+      nav{padding:0 20px}
+      .nl .nt{display:none}
+      .two{grid-template-columns:1fr;gap:40px}
+      .four,.six{grid-template-columns:1fr}
+      .sbod{grid-template-columns:1fr}
+      .stabs{flex-wrap:wrap}
+      .btns{flex-direction:column;align-items:center}
     }
   </style>
 </head>
 <body>
-
-  <!-- NAV -->
-  <nav>
-    <a href="#" class="nav-brand">
-      <div class="nav-dot"></div>
-      <span class="nav-wordmark">Shepherd</span>
-    </a>
-    <ul class="nav-links">
-        <li><a href="#intelligence">Intelligence</a></li>
-        <li><a href="#wargames">War Games</a></li>
-        <li><a href="#cta" class="nav-cta">Request Access</a></li>
-    </ul>
-  </nav>
-
-  <!-- HERO -->
-  <section id="hero">
-    <div class="hero-grid-bg"></div>
-    <div class="hero-glow"></div>
-    <div class="container">
-      <div class="hero-inner">
-        <div class="hero-eyebrow fade-up">
-          <div class="eyebrow-line"></div>
-          <span class="eyebrow-text">Disruption Intelligence · War Games Simulation</span>
-        </div>
-        <h1 class="hero-headline fade-up fade-up-delay-1">
-          The <em>decision gap</em> is what grounds your operation.
-        </h1>
-        <p class="hero-sub fade-up fade-up-delay-2">
-          When crew constraints, connection clusters, and slot windows collide simultaneously, operations teams don't have a tooling problem. They have a decision-making muscle memory problem. Shepherd fixes that.
-        </p>
-        <div class="hero-actions fade-up fade-up-delay-3">
-          <a href="#cta" class="btn-primary">Request a Briefing</a>
-          <a href="#how" class="btn-ghost">See the Platform</a>
-        </div>
+ 
+<nav>
+  <div class="nb"><div class="nd"></div><span class="nw">Shepherd</span></div>
+  <ul class="nl">
+    <li><button class="nt ai" onclick="switchTab('i')">Intelligence</button></li>
+    <li><button class="nt" onclick="switchTab('s')">War Games</button></li>
+    <li><a href="mailto:hello@shephr.io" class="ncta">Request Access</a></li>
+  </ul>
+</nav>
+ 
+<div class="hero">
+  <div class="hgrid"></div>
+  <div class="w">
+    <div class="hero-in">
+      <div class="htag">Disruption Intelligence · War Games Simulation</div>
+      <h1 class="hh1">See the cascade coming.<br/><em>Train your teams to stop it.</em></h1>
+      <p class="hsub">Shepherd gives aviation operations teams two things: real-time intelligence to see disruption risk before it compounds — and simulation-based training to build the decision muscle memory to act on it decisively when it does.</p>
+      <div class="htabs">
+        <button class="htab ti on" onclick="switchTab('i')">Intelligence</button>
+        <button class="htab ts" onclick="switchTab('s')">War Games</button>
       </div>
     </div>
-    <div class="hero-stat-strip">
-      <div class="hero-stat">
-        <div class="stat-num">72h</div>
-        <div class="stat-label">Average cascade resolution gap</div>
-      </div>
-      <div class="hero-stat">
-        <div class="stat-num">5</div>
-        <div class="stat-label">Scored decision dimensions</div>
-      </div>
-      <div class="hero-stat">
-        <div class="stat-num">48h</div>
-        <div class="stat-label">Automated post-session review</div>
-      </div>
-      <div class="hero-stat">
-        <div class="stat-num">∞</div>
-        <div class="stat-label">Replayable scenario library</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROBLEM -->
-  <section id="problem">
-    <div class="container">
-      <div class="problem-layout">
+  </div>
+</div>
+ 
+<!-- INTELLIGENCE PANEL -->
+<div id="panel-i" class="panel on">
+ 
+  <div class="sec">
+    <div class="w">
+      <div class="two">
         <div>
-          <div class="section-eyebrow">
-            <div class="eyebrow-tick"></div>
-            <span>The Problem</span>
-          </div>
-          <h2 class="section-title fade-up">
-            Your systems are ready.<br/>
-            <em>Your teams aren't practised.</em>
-          </h2>
-          <p class="section-body fade-up fade-up-delay-1">
-            Aviation has invested heavily in tooling. Real-time data, integrated dashboards, automated alerts. But no tool prevents a controller from prioritising the wrong flights when crew constraints and connection clusters collide at 02:00.
-          </p>
-          <p class="section-body fade-up fade-up-delay-2" style="margin-top: 16px;">
-            The problem is trained intuition. Military aviation solved this with simulation decades ago. Commercial operations haven't.
-          </p>
-        </div>
-        <div class="problem-right fade-up fade-up-delay-1">
-          <div class="cascade-item">
-            <div class="cascade-label">Trigger Event</div>
-            <div class="cascade-text">Engineering delay pushes 3 aircraft into FTL-critical territory simultaneously</div>
-          </div>
-          <div class="cascade-arrow">↓</div>
-          <div class="cascade-item">
-            <div class="cascade-label">First Decision Window — 12 Minutes</div>
-            <div class="cascade-text">Connection protection vs. crew positioning vs. slot compliance — no single right answer without context</div>
-          </div>
-          <div class="cascade-arrow">↓</div>
-          <div class="cascade-item">
-            <div class="cascade-label">Cascade Pressure</div>
-            <div class="cascade-text">240 connecting passengers now at risk. Ground handler SLAs breaching. Welfare obligations activating.</div>
-          </div>
-          <div class="cascade-arrow">↓</div>
-          <div class="cascade-item" style="border-color: rgba(201,168,76,0.25);">
-            <div class="cascade-label" style="color: var(--gold);">Decision Quality Determines Recovery</div>
-            <div class="cascade-text">Teams with practised pattern recognition resolve 40% faster. The gap is muscle memory, not information.</div>
+          <div class="pill i"><div class="pdot"></div>Pillar One</div>
+          <div class="ey"><div class="tk tki"></div><span class="i">Live Disruption Intelligence</span></div>
+          <h2 class="sh2">See the network.<br/><em class="i">Before it breaks.</em></h2>
+          <p class="sb">Shepherd's intelligence layer surfaces connection risk, network fragility, and cascade exposure in real time. Operations teams get the full downstream picture before the window to act closes — not after the cascade has already started.</p>
+          <div style="margin-top:28px">
+            <div class="bar-hl">
+              <div class="bar-line"></div>
+              <div class="bar-content">
+                <div class="bar-title">The Problem It Solves</div>
+                <div class="bar-body">Connection clusters, fragility scores, and cascade flags are scattered across systems — or not surfaced at all until the window to act has closed. Shepherd consolidates them into a single, proactive intelligence picture.</div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- HOW IT WORKS -->
-  <section id="how">
-    <div class="container">
-      <div class="how-header">
         <div>
-          <div class="section-eyebrow">
-            <div class="eyebrow-tick"></div>
-            <span>The Platform</span>
-          </div>
-          <h2 class="section-title fade-up">
-            Simulation that <em>scores</em> what matters.
-          </h2>
-        </div>
-        <p class="section-body fade-up fade-up-delay-1">
-          Shepherd is a war games simulation environment for airline operations teams. Live facilitator control. Branching decision scenarios. Automated after-action review with benchmarked scoring across every dimension of operational judgment.
-        </p>
-      </div>
-      <div class="feature-grid">
-        <div class="feature-cell fade-up">
-          <div class="feature-num">01</div>
-          <svg class="feature-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="4" y="8" width="28" height="20" rx="1" stroke="#c9a84c" stroke-width="1" fill="none"/>
-            <path d="M14 17h8M14 21h5" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
-            <circle cx="10" cy="17" r="1.5" fill="#c9a84c" opacity="0.6"/>
-            <circle cx="10" cy="21" r="1.5" fill="#c9a84c" opacity="0.3"/>
-            <rect x="14" y="4" width="8" height="4" rx="1" stroke="#c9a84c" stroke-width="1" opacity="0.4"/>
-          </svg>
-          <div class="feature-title">Scenario Engine</div>
-          <p class="feature-desc">Branching disruption scenarios across crew, connection, runway, weather, and systems events. Replays actual industry event patterns. New scenarios authored in minutes by your ops team.</p>
-        </div>
-        <div class="feature-cell fade-up fade-up-delay-1">
-          <div class="feature-num">02</div>
-          <svg class="feature-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="6" y="6" width="24" height="24" rx="1" stroke="#c9a84c" stroke-width="1" fill="none"/>
-            <path d="M6 16h24" stroke="#c9a84c" stroke-width="0.75" opacity="0.3"/>
-            <path d="M16 6v24" stroke="#c9a84c" stroke-width="0.75" opacity="0.3"/>
-            <circle cx="18" cy="18" r="5" stroke="#c9a84c" stroke-width="1" fill="none"/>
-            <circle cx="18" cy="18" r="1.5" fill="#c9a84c"/>
-          </svg>
-          <div class="feature-title">Live Facilitator Control</div>
-          <p class="feature-desc">Real-time session runner for facilitators. Inject events, pause for debrief, monitor every team's decision path simultaneously. War room and individual participant views.</p>
-        </div>
-        <div class="feature-cell fade-up fade-up-delay-2">
-          <div class="feature-num">03</div>
-          <svg class="feature-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 26L14 18l5 5 5-8 4 4" stroke="#c9a84c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            <circle cx="8" cy="26" r="1.5" fill="#c9a84c" opacity="0.5"/>
-            <circle cx="28" cy="15" r="1.5" fill="#c9a84c"/>
-            <rect x="5" y="5" width="4" height="14" rx="1" stroke="#c9a84c" stroke-width="0.75" opacity="0.2" fill="none"/>
-          </svg>
-          <div class="feature-title">After Action Review</div>
-          <p class="feature-desc">Automated post-session scoring across 5 dimensions: cascade awareness, priority accuracy, regulatory compliance, resource efficiency, and passenger impact. Benchmarked against industry norms.</p>
-        </div>
-        <div class="feature-cell fade-up fade-up-delay-3">
-          <div class="feature-num">04</div>
-          <svg class="feature-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="18" cy="10" r="5" stroke="#c9a84c" stroke-width="1" fill="none"/>
-            <circle cx="9" cy="24" r="4" stroke="#c9a84c" stroke-width="1" fill="none" opacity="0.6"/>
-            <circle cx="27" cy="24" r="4" stroke="#c9a84c" stroke-width="1" fill="none" opacity="0.6"/>
-            <path d="M13.5 13.5L12 20M22.5 13.5L24 20" stroke="#c9a84c" stroke-width="0.75" opacity="0.4"/>
-          </svg>
-          <div class="feature-title">Team Benchmarking</div>
-          <p class="feature-desc">Individual and cohort performance tracked across sessions. Identify decision pattern gaps by role, shift, and experience level. Progress visible over time.</p>
-        </div>
-        <div class="feature-cell fade-up fade-up-delay-1">
-          <div class="feature-num">05</div>
-          <svg class="feature-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 6v4M18 26v4M6 18h4M26 18h4" stroke="#c9a84c" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
-            <circle cx="18" cy="18" r="8" stroke="#c9a84c" stroke-width="1" fill="none"/>
-            <circle cx="18" cy="18" r="4" stroke="#c9a84c" stroke-width="0.75" fill="none" opacity="0.5"/>
-            <circle cx="18" cy="18" r="1.5" fill="#c9a84c"/>
-          </svg>
-          <div class="feature-title">Executive War Games</div>
-          <p class="feature-desc">C-suite and director-level strategic exercises. Network-wide scenario planning. Stress-test recovery strategies before the next major disruption event. Facilitated engagements available.</p>
-        </div>
-        <div class="feature-cell fade-up fade-up-delay-2">
-          <div class="feature-num">06</div>
-          <svg class="feature-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 10h16v16H10z" stroke="#c9a84c" stroke-width="1" fill="none"/>
-            <path d="M14 14h8v8h-8z" stroke="#c9a84c" stroke-width="0.75" fill="none" opacity="0.4"/>
-            <path d="M10 10L6 6M26 10l4-4M10 26L6 30M26 26l4 4" stroke="#c9a84c" stroke-width="0.75" opacity="0.3"/>
-          </svg>
-          <div class="feature-title">Roster Integration</div>
-          <p class="feature-desc">Participant management, role assignment, and cross-carrier session support. Designed for ops, customer experience, ground handling, and frontline teams — not just OCC controllers.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SCENARIOS -->
-  <section id="scenarios">
-    <div class="container">
-      <div class="scenarios-header">
-        <div class="section-eyebrow" style="justify-content: center;">
-          <div class="eyebrow-tick"></div>
-          <span>Live Simulation</span>
-        </div>
-        <h2 class="section-title fade-up">Pressure that performs like the real thing.</h2>
-        <p class="section-body fade-up fade-up-delay-1">Every scenario is timed, cascading, and scored. Participants feel the weight of real constraints. Facilitators control the tempo.</p>
-      </div>
-      <div class="scenario-tabs">
-        <button class="scenario-tab active" onclick="setScenario(0)">Crew Limits</button>
-        <button class="scenario-tab" onclick="setScenario(1)">Connection Cascade</button>
-        <button class="scenario-tab" onclick="setScenario(2)">Runway Closure</button>
-        <button class="scenario-tab" onclick="setScenario(3)">Ground Stop</button>
-      </div>
-      <div class="scenario-display fade-up fade-up-delay-1">
-        <div class="scenario-header-bar">
-          <div class="scenario-dot red"></div>
-          <div class="scenario-dot yellow"></div>
-          <div class="scenario-dot green"></div>
-          <span class="scenario-title-bar" id="scenario-bar-title">SHEPHERD / SESSION-WG-003 / CREW-LIMITS / TRIAGE</span>
-        </div>
-        <div class="scenario-body">
-          <div class="scenario-inject" id="scenario-inject">
-            <div class="inject-label">⚡ Live Inject — T+14 Minutes</div>
-            <p class="inject-text" id="scenario-inject-text">
-              Delay cascade has pushed 4 crews into their final 2 hours of duty simultaneously. Standby pool has 2 crews available. Must select 2 of 4 FTL-affected flights to operate. Flights: BA721 (82 connections, 4h20), BA722 (12 connections, 1h45), BA723 (45 connections, crew at destination), BA724 (last service to thin route, 180 pax).
-            </p>
-          </div>
-          <div class="scenario-options" id="scenario-options">
-            <div class="option-item optimal">
-              <span class="option-key">A</span>
-              <span class="option-text">Allocate to BA721 (highest connection risk) and BA724 (no alternative service). Cancel BA722 and BA723.</span>
-              <span class="option-badge">Optimal</span>
+          <div class="dmock">
+            <div class="dbar">
+              <div class="dd dl"></div>
+              <span class="dtit">SHEPHERD / LIVE — 14:32 UTC</span>
+              <span class="dtime">Fragility: ELEVATED · 3 flags</span>
             </div>
-            <div class="option-item">
-              <span class="option-key">B</span>
-              <span class="option-text">Allocate to longest-haul flights BA721 and BA723 by flight time.</span>
-            </div>
-            <div class="option-item">
-              <span class="option-key">C</span>
-              <span class="option-text">Allocate to easiest-to-operate flights to maximise operational success probability.</span>
+            <div class="dbody">
+              <div class="dr al"><div class="ds r"></div><div class="dfl">BA2201</div><div class="ddt">+47 min · 82 connections at risk · Cut-off in 38 min</div><div class="dbg r">Cascade</div></div>
+              <div class="dr wn"><div class="ds a"></div><div class="dfl">BA4412</div><div class="ddt">Crew FTL limit · 2 standby available · 90 min window</div><div class="dbg a">FTL Watch</div></div>
+              <div class="dr wn"><div class="ds a"></div><div class="dfl">BA0871</div><div class="ddt">CTOT closing · Slot held 22 min · Handler SLA risk</div><div class="dbg a">Slot</div></div>
+              <div class="dr"><div class="ds g"></div><div class="dfl">BA1103</div><div class="ddt">On time · 12 connections protected · No flags</div><div class="dbg b">Nominal</div></div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- AAR -->
-  <section id="aar">
-    <div class="container">
-      <div class="aar-layout">
+  </div>
+ 
+  <div class="sec">
+    <div class="w">
+      <div class="ey"><div class="tk tki"></div><span class="i">Platform features</span></div>
+      <h2 class="sh2" style="margin-bottom:36px">What Intelligence gives you.</h2>
+      <div class="four">
+        <div class="fc">
+          <div class="fnum i">01</div>
+          <div class="ftit">Connection Risk Scoring</div>
+          <p class="fdsc">Every inbound flight is scored against its connection cluster in real time. Misconnect probability, passenger volume at risk, and rebooking options are surfaced before the aircraft lands — not after.</p>
+          <div class="fsigs">
+            <div class="fsig i">Live misconnect probability per flight</div>
+            <div class="fsig i">Connection cluster passenger count</div>
+            <div class="fsig i">Downstream rebooking capacity flagged</div>
+          </div>
+        </div>
+        <div class="fc">
+          <div class="fnum i">02</div>
+          <div class="ftit">Network Fragility Mapping</div>
+          <p class="fdsc">Shepherd scores the structural fragility of your network at any given moment — identifying which routes, crew pools, and aircraft are operating closest to their limits before a trigger event hits.</p>
+          <div class="fsigs">
+            <div class="fsig i">Crew FTL proximity indicators</div>
+            <div class="fsig i">Thin-route single-point-of-failure flags</div>
+            <div class="fsig i">Slot window pressure scoring</div>
+          </div>
+        </div>
+        <div class="fc">
+          <div class="fnum i">03</div>
+          <div class="ftit">Cascade Flag & Impact Mapping</div>
+          <p class="fdsc">When a delay or cancellation occurs, Shepherd immediately maps its full downstream cascade — flagging affected connections, welfare obligations, and crew constraint knock-ons across the entire day's operation.</p>
+          <div class="fsigs">
+            <div class="fsig i">Automated cascade chain mapping</div>
+            <div class="fsig i">EU261 / FTL exposure flagged instantly</div>
+            <div class="fsig i">Priority action sequencing surfaced</div>
+          </div>
+        </div>
+        <div class="fc">
+          <div class="fnum i">04</div>
+          <div class="ftit">Real-Time Disruption Dashboard</div>
+          <p class="fdsc">A single operational picture across your network — live flight status, fragility scores, active cascade flags, and passenger impact metrics consolidated in one place for every team that needs visibility.</p>
+          <div class="fsigs">
+            <div class="fsig i">Cross-network live status view</div>
+            <div class="fsig i">Role-based visibility layers</div>
+            <div class="fsig i">Configurable alert thresholds</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="sec">
+    <div class="w">
+      <div class="two">
         <div>
-          <div class="section-eyebrow">
-            <div class="eyebrow-tick"></div>
-            <span>After Action Review</span>
-          </div>
-          <h2 class="section-title fade-up">
-            Decisions are scored.<br/><em>Patterns are revealed.</em>
-          </h2>
-          <p class="section-body fade-up fade-up-delay-1">
-            Every session ends with an automated after-action review. Scoring is system-derived — not self-reported. Scenario options are pre-tagged with cascade and priority metadata, producing deterministic, consistent assessment across every participant.
-          </p>
-          <div class="insight-block fade-up fade-up-delay-2">
-            <div class="insight-label">Insight Example — Session WG-003</div>
-            <p class="insight-text">
-              Team's cascade awareness score (6.2/10) was 18% below benchmark. Pattern: consistently under-protected connection clusters when primary disruption was crew-origin. Recommend: crew-cascade specific scenario block in next session.
-            </p>
+          <div class="ey"><div class="tk tki"></div><span class="i">Who it's for</span></div>
+          <h2 class="sh2">Every team that needs<br/><em class="i">situational awareness.</em></h2>
+          <p class="sb" style="margin-bottom:24px">The intelligence layer is built for anyone in your organisation who needs to see what's happening — and what's about to happen — across the network in real time.</p>
+          <div class="aud"><div class="aud-t">Operations & Network Teams</div><div class="aud-b">Live cascade visibility and connection risk scoring to support real-time decisions on delay and cancellation events.</div></div>
+          <div class="aud"><div class="aud-t">Ground & Airport Teams</div><div class="aud-b">Welfare obligation flags and passenger impact data to support ground-side recovery execution.</div></div>
+          <div class="aud"><div class="aud-t">Customer Experience Teams</div><div class="aud-b">Passenger-level disruption data and compensation exposure flags to support proactive customer communication.</div></div>
+          <div class="aud"><div class="aud-t">Senior Leadership</div><div class="aud-b">Network-wide fragility picture and cascade risk scoring for strategic oversight during major disruption events.</div></div>
+        </div>
+        <div>
+          <div class="ey"><div class="tk tki"></div><span class="i">Credentials</span></div>
+          <h2 class="sh2">Built from inside<br/><em class="i">the problem.</em></h2>
+          <div class="cred"><div class="cion">✈</div><div><div class="ctit">Operational Origin</div><p class="cbod">Founded by a former British Airways Customer Experience Expert who owned the Heathrow disruption management product — and was in the room when it actually happened during the May 2017 global IT outage. This is not an academic product.</p></div></div>
+          <div class="cred"><div class="cion">◈</div><div><div class="ctit">Industry Validation</div><p class="cbod">The founding team's predecessor disruption intelligence project was selected for the IATA accelerate@iata programme — a competitive cohort of the highest-potential aviation startups globally.</p></div></div>
+          <div class="cred"><div class="cion">⬡</div><div><div class="ctit">Category Signal</div><p class="cbod">Navi AI's recent $6.7M raise confirmed investor confidence in AI-powered ops tools. Shepherd owns the decision-making layer.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="sec-last">
+    <div class="w">
+      <div class="cta-block">
+        <div class="ey" style="justify-content:center"><div class="tk tki"></div><span class="i">Get started</span></div>
+        <h2 class="sh2">See your network clearly.<br/><em class="i">Before passengers do.</em></h2>
+        <p class="sb">Request a briefing to discuss your operations context and how the Shepherd intelligence layer maps to it.</p>
+        <div class="btns">
+          <a href="mailto:hello@shephr.io" class="bp">Request a Briefing</a>
+          <button class="bg2" onclick="switchTab('s')">Explore War Games</button>
+        </div>
+        <p class="cta-fine">No sales process. Direct conversation with the founding team — hello@shephr.io</p>
+      </div>
+    </div>
+  </div>
+ 
+</div>
+ 
+<!-- WAR GAMES PANEL -->
+<div id="panel-s" class="panel">
+ 
+  <div class="sec">
+    <div class="w">
+      <div class="two">
+        <div>
+          <div class="pill s"><div class="pdot"></div>Pillar Two</div>
+          <div class="ey"><div class="tk tks"></div><span class="s">War Games & Simulation</span></div>
+          <h2 class="sh2">Train the decisions<br/><em class="s">that matter most.</em></h2>
+          <p class="sb">Seeing the cascade is only half the problem. Teams need the practised decision instincts to act on it — fast, correctly, under pressure. Shepherd's simulation layer builds that muscle memory through scored, repeatable exercises with automated after-action review.</p>
+          <div style="margin-top:28px">
+            <div class="bar-hl">
+              <div class="bar-line"></div>
+              <div class="bar-content">
+                <div class="bar-title">The Problem It Solves</div>
+                <div class="bar-body">Pilots train in simulators. Military commanders run war games. Aviation operations teams — who make decisions with identical stakes — have no equivalent training standard. Shepherd changes that.</div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="score-card fade-up fade-up-delay-1">
-          <div class="score-header">
-            <span class="score-title">Session WG-003 · OCC Team Alpha</span>
-            <span class="score-overall">7.4 / 10</span>
+        <div>
+          <div class="ey"><div class="tk tks"></div><span class="s">Live Simulation</span></div>
+          <div class="stabs">
+            <button class="stab on" onclick="setS(0)">Crew Limits</button>
+            <button class="stab" onclick="setS(1)">Connection Cascade</button>
+            <button class="stab" onclick="setS(2)">Runway Closure</button>
+            <button class="stab" onclick="setS(3)">Ground Stop</button>
           </div>
-          <div class="score-dimension">
-            <div class="dim-name">Cascade Awareness</div>
-            <div class="dim-bar-track"><div class="dim-bar-fill" style="width: 62%"></div></div>
-            <div class="dim-score">6.2</div>
-          </div>
-          <div class="score-dimension">
-            <div class="dim-name">Priority Accuracy</div>
-            <div class="dim-bar-track"><div class="dim-bar-fill" style="width: 80%"></div></div>
-            <div class="dim-score">8.0</div>
-          </div>
-          <div class="score-dimension">
-            <div class="dim-name">Regulatory Compliance</div>
-            <div class="dim-bar-track"><div class="dim-bar-fill" style="width: 90%"></div></div>
-            <div class="dim-score">9.0</div>
-          </div>
-          <div class="score-dimension">
-            <div class="dim-name">Resource Efficiency</div>
-            <div class="dim-bar-track"><div class="dim-bar-fill" style="width: 74%"></div></div>
-            <div class="dim-score">7.4</div>
-          </div>
-          <div class="score-dimension">
-            <div class="dim-name">Passenger Impact</div>
-            <div class="dim-bar-track"><div class="dim-bar-fill" style="width: 68%"></div></div>
-            <div class="dim-score">6.8</div>
+          <div class="sdisp">
+            <div class="shbar"><div class="dot3 r"></div><div class="dot3 y"></div><div class="dot3 g"></div><span class="stbar" id="stbar">SESSION-WG-003 / CREW-LIMITS / TRIAGE</span></div>
+            <div class="sbod">
+              <div class="sinj">
+                <div class="silb" id="slbl">⚡ Inject — T+14 min</div>
+                <p class="sitx" id="stxt">Delay cascade has pushed 4 crews into their final 2 hours simultaneously. Standby pool: 2 crews. Must select 2 of 4 FTL-affected flights. BA721 (82 connections, 4h20), BA722 (12 connections, 1h45), BA723 (45 connections, crew at dest), BA724 (last service, 180 pax).</p>
+              </div>
+              <div class="sopts" id="sopts">
+                <div class="opt op"><span class="ok">A</span><span class="ot">Allocate to BA721 (highest connection risk) and BA724 (no alternative). Cancel BA722 and BA723.</span><span class="obg">Optimal</span></div>
+                <div class="opt"><span class="ok">B</span><span class="ot">Allocate to longest-haul BA721 and BA723 by flight time.</span></div>
+                <div class="opt"><span class="ok">C</span><span class="ot">Allocate to easiest-to-operate flights to maximise success probability.</span></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- PROOF -->
-  <section id="proof">
-    <div class="container">
-      <div class="section-eyebrow">
-        <div class="eyebrow-tick"></div>
-        <span>Credentials</span>
-      </div>
-      <h2 class="section-title fade-up" style="max-width: 480px;">
-        Built from inside<br/><em>the problem.</em>
-      </h2>
-      <div class="credential-strip fade-up fade-up-delay-1">
-        <div class="credential-item">
-          <div class="credential-icon">✈</div>
-          <div>
-            <div class="credential-title">Operational Origin</div>
-            <p class="credential-body">Shepherd was founded by a former British Airways Customer Experience Expert who owned the Heathrow disruption management product — and was in the room when it actually happened during the May 2017 global IT outage. This is not an academic product.</p>
+  </div>
+ 
+  <div class="sec">
+    <div class="w">
+      <div class="ey"><div class="tk tks"></div><span class="s">Platform features</span></div>
+      <h2 class="sh2" style="margin-bottom:36px">What War Games gives you.</h2>
+      <div class="six">
+        <div class="fc">
+          <div class="fnum s">01</div>
+          <div class="ftit">Scenario Engine</div>
+          <p class="fdsc">Branching disruption scenarios across crew, connection, runway, weather, and systems events. Built from real industry event patterns. New scenarios authored by your own teams in minutes.</p>
+          <div class="fsigs">
+            <div class="fsig s">Crew, slot, connection, weather, runway types</div>
+            <div class="fsig s">Configurable cascade branching</div>
+            <div class="fsig s">Replayable and editable scenario library</div>
           </div>
         </div>
-        <div class="credential-item">
-          <div class="credential-icon">◈</div>
-          <div>
-            <div class="credential-title">Industry Validation</div>
-            <p class="credential-body">A predecessor disruption management project was selected for the IATA accelerate@iata programme — a competitive cohort of the highest-potential aviation startups globally. Founder-level IATA credibility carried forward into Shepherd.</p>
+        <div class="fc">
+          <div class="fnum s">02</div>
+          <div class="ftit">Live Facilitator Control</div>
+          <p class="fdsc">Real-time session runner for facilitators. Inject events mid-session, pause for debrief, and monitor every participant's decision path simultaneously. War room and individual views available.</p>
+          <div class="fsigs">
+            <div class="fsig s">Live event injection mid-session</div>
+            <div class="fsig s">Per-participant decision tracking</div>
+            <div class="fsig s">War room and individual views</div>
           </div>
         </div>
-        <div class="credential-item">
-          <div class="credential-icon">⬡</div>
-          <div>
-            <div class="credential-title">Category Signal</div>
-            <p class="credential-body">The aviation operations intelligence category is being validated in real time. Navi AI's recent $6.7M raise confirmed investor confidence in AI-powered ops tools. Shepherd owns the decision-making layer.</p>
+        <div class="fc">
+          <div class="fnum s">03</div>
+          <div class="ftit">Automated Scoring</div>
+          <p class="fdsc">System-derived scoring across five dimensions — cascade awareness, priority accuracy, regulatory compliance, resource efficiency, and passenger impact. No self-reporting. No subjectivity.</p>
+          <div class="fsigs">
+            <div class="fsig s">5 scored decision dimensions</div>
+            <div class="fsig s">Configurable dimension weighting</div>
+            <div class="fsig s">Benchmarked against industry norms</div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- WHO -->
-  <section id="who">
-    <div class="container">
-      <div class="section-eyebrow">
-        <div class="eyebrow-tick"></div>
-        <span>Who It's For</span>
-      </div>
-      <h2 class="section-title fade-up" style="max-width: 520px;">
-        The full operations<br/><em>workforce.</em>
-      </h2>
-      <p class="section-body fade-up fade-up-delay-1">
-        Shepherd isn't just for OCC controllers. The decision gap exists across every team that interfaces with disruption — and every team that needs to coordinate when it cascades.
-      </p>
-      <div class="who-grid">
-        <div class="who-card fade-up">
-          <div class="who-role">Core Tier</div>
-          <div class="who-title">Operations Control Centres</div>
-          <p class="who-desc">Network controllers, shift supervisors, and duty managers. The teams making live decisions under pressure when cascades compound.</p>
-          <div class="who-bullets">
-            <div class="who-bullet">Crew constraint and FTL decision scenarios</div>
-            <div class="who-bullet">Connection cluster management</div>
-            <div class="who-bullet">CTOT compliance and slot window optimisation</div>
-            <div class="who-bullet">Regulatory exposure scoring (EU261, FTL)</div>
+        <div class="fc">
+          <div class="fnum s">04</div>
+          <div class="ftit">After Action Review</div>
+          <p class="fdsc">Every session ends with a detailed automated debrief. Decision patterns identified. Benchmark gaps surfaced. Recommended focus areas for the next session generated automatically.</p>
+          <div class="fsigs">
+            <div class="fsig s">Automated post-session debrief report</div>
+            <div class="fsig s">Decision pattern gap analysis</div>
+            <div class="fsig s">Next-session recommendations</div>
           </div>
         </div>
-        <div class="who-card fade-up fade-up-delay-1">
-          <div class="who-role">Operations Tier</div>
-          <div class="who-title">Ground Operations & Handling</div>
-          <p class="who-desc">Ground handlers, airport operations teams, and turnaround coordinators managing the physical execution of the recovery plan.</p>
-          <div class="who-bullets">
-            <div class="who-bullet">Welfare obligation activation scenarios</div>
-            <div class="who-bullet">Rebooking triage and queue management</div>
-            <div class="who-bullet">Cross-carrier coordination protocols</div>
+        <div class="fc">
+          <div class="fnum s">05</div>
+          <div class="ftit">Team Benchmarking</div>
+          <p class="fdsc">Individual and cohort performance tracked across sessions over time. Identify decision gaps by role, shift, and experience level. Progress measurable and reportable to leadership.</p>
+          <div class="fsigs">
+            <div class="fsig s">Cross-session performance tracking</div>
+            <div class="fsig s">Role and shift-level gap analysis</div>
+            <div class="fsig s">Exportable progress reports</div>
           </div>
         </div>
-        <div class="who-card fade-up fade-up-delay-2">
-          <div class="who-role">Customer Tier</div>
-          <div class="who-title">Customer Experience Teams</div>
-          <p class="who-desc">Contact centre, airport customer service, and frontline passenger-facing teams who carry the passenger impact burden during disruption events.</p>
-          <div class="who-bullets">
-            <div class="who-bullet">High-value passenger priority scenarios</div>
-            <div class="who-bullet">Compensation entitlement decision trees</div>
-            <div class="who-bullet">Communication timing and channel exercises</div>
-          </div>
-        </div>
-        <div class="who-card fade-up fade-up-delay-3">
-          <div class="who-role">Executive Tier</div>
-          <div class="who-title">Directors & C-Suite</div>
-          <p class="who-desc">Network directors, COOs, and CXOs who need to stress-test recovery strategies and crisis governance frameworks at the strategic level.</p>
-          <div class="who-bullets">
-            <div class="who-bullet">Network-wide disruption war games</div>
-            <div class="who-bullet">Cross-departmental coordination exercises</div>
-            <div class="who-bullet">Press and communications pressure scenarios</div>
+        <div class="fc">
+          <div class="fnum s">06</div>
+          <div class="ftit">Executive War Games</div>
+          <p class="fdsc">Strategic-level exercises for directors and senior leadership. Network-wide scenario planning. Stress-test recovery frameworks and crisis governance before the next major event.</p>
+          <div class="fsigs">
+            <div class="fsig s">C-suite and director-level facilitation</div>
+            <div class="fsig s">Network-wide strategic scenarios</div>
+            <div class="fsig s">Benchmarked against McKinsey/BCG war games</div>
           </div>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- CTA -->
-  <section id="cta">
-    <div class="container">
-      <div class="cta-inner">
-        <div class="section-eyebrow" style="justify-content: center;">
-          <div class="eyebrow-tick"></div>
-          <span>Get Started</span>
+  </div>
+ 
+  <div class="sec">
+    <div class="w">
+      <div class="two">
+        <div>
+          <div class="ey"><div class="tk tks"></div><span class="s">After Action Review</span></div>
+          <h2 class="sh2">Decisions scored.<br/><em class="s">Patterns revealed.</em></h2>
+          <p class="sb">Scoring is system-derived — not self-reported. Scenario options are pre-tagged with cascade and priority metadata, producing consistent, deterministic assessment across every participant and session.</p>
+          <div class="iblock">
+            <div class="ilbl">Insight — Session WG-003</div>
+            <p class="itxt">Cascade awareness score (6.2/10) was 18% below benchmark. Pattern: consistently under-protected connection clusters when the primary disruption was crew-origin. Recommended: crew-cascade scenario block in next session.</p>
+          </div>
         </div>
-        <h2 class="section-title fade-up">
-          Ready to build the <em>muscle memory</em> your teams need?
-        </h2>
-        <p class="section-body fade-up fade-up-delay-1">
-          We work with a focused set of airline partners. Request a briefing to discuss your operations context and how Shepherd maps to it.
-        </p>
-        <div class="cta-actions fade-up fade-up-delay-2">
-          <a href="mailto:hello@shephr.ai" class="btn-primary">Request a Briefing</a>
-          <a href="#how" class="btn-ghost">Explore the Platform</a>
+        <div class="sc">
+          <div class="sch"><span class="sct">Session WG-003 · Operations Team Alpha</span><span class="sco">7.4 / 10</span></div>
+          <div class="sdim"><div class="dn">Cascade Awareness</div><div class="dbt"><div class="dbf" style="width:62%"></div></div><div class="dsc">6.2</div></div>
+          <div class="sdim"><div class="dn">Priority Accuracy</div><div class="dbt"><div class="dbf" style="width:80%"></div></div><div class="dsc">8.0</div></div>
+          <div class="sdim"><div class="dn">Regulatory Compliance</div><div class="dbt"><div class="dbf" style="width:90%"></div></div><div class="dsc">9.0</div></div>
+          <div class="sdim"><div class="dn">Resource Efficiency</div><div class="dbt"><div class="dbf" style="width:74%"></div></div><div class="dsc">7.4</div></div>
+          <div class="sdim"><div class="dn">Passenger Impact</div><div class="dbt"><div class="dbf" style="width:68%"></div></div><div class="dsc">6.8</div></div>
         </div>
-        <p class="cta-fine fade-up fade-up-delay-3">No sales process. Direct conversation with the founding team.</p>
       </div>
     </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="container">
-      <div class="footer-inner">
-        <div class="footer-brand">
-          <div class="nav-dot" style="width:6px;height:6px;"></div>
-          <span class="footer-copy" style="margin-left: 8px; color: var(--muted);">SHEPHERD</span>
-          <span class="footer-copy" style="margin-left: 20px;">© 2026 Shepherd. Disruption Intelligence for Aviation.</span>
+  </div>
+ 
+  <div class="sec-last">
+    <div class="w">
+      <div class="cta-block">
+        <div class="ey" style="justify-content:center"><div class="tk tks"></div><span class="s">Get started</span></div>
+        <h2 class="sh2">Build the muscle memory<br/><em class="s">before the next event.</em></h2>
+        <p class="sb">We work with a focused set of airline partners. Request a briefing to discuss your operations context and how Shepherd War Games maps to it.</p>
+        <div class="btns">
+          <a href="mailto:hello@shephr.io" class="bp">Request a Briefing</a>
+          <button class="bg2" onclick="switchTab('i')">Explore Intelligence</button>
         </div>
-        <ul class="footer-links">
-          <li><a href="mailto:hello@shephr.ai">Contact</a></li>
-          <li><a href="#">Privacy</a></li>
-        </ul>
+        <p class="cta-fine">No sales process. Direct conversation with the founding team — hello@shephr.io</p>
       </div>
     </div>
-  </footer>
-
-  <script>
-    // Intersection observer for scroll animations
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-    document.querySelectorAll('.fade-up').forEach(el => {
-      observer.observe(el);
+  </div>
+ 
+</div>
+ 
+<footer>
+  <div class="w">
+    <div class="ftri">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="nd" style="width:6px;height:6px"></div>
+        <span class="fcp" style="color:var(--mu);margin-left:4px">SHEPHERD</span>
+        <span class="fcp" style="margin-left:14px">© 2026 Shepherd. Disruption Intelligence for Aviation.</span>
+      </div>
+      <ul class="fls">
+        <li><a href="mailto:hello@shephr.io">Contact</a></li>
+        <li><a href="#">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+ 
+<script>
+  const SC=[
+    {t:'SESSION-WG-003 / CREW-LIMITS / TRIAGE',l:'⚡ Inject — T+14 min',x:'Delay cascade has pushed 4 crews into their final 2 hours simultaneously. Standby pool: 2 crews. Must select 2 of 4 FTL-affected flights. BA721 (82 connections, 4h20), BA722 (12 connections, 1h45), BA723 (45 connections, crew at dest), BA724 (last service, 180 pax).',o:[{k:'A',t:'Allocate to BA721 (highest connection risk) and BA724 (no alternative). Cancel BA722 and BA723.',op:true},{k:'B',t:'Allocate to longest-haul BA721 and BA723 by flight time.',op:false},{k:'C',t:'Allocate to easiest-to-operate flights to maximise success probability.',op:false}]},
+    {t:'SESSION-WG-003 / CONNECTION-CASCADE / RECOGNITION',l:'⚡ Inject — T+08 min',x:'Inbound BA2201 tracking 47 min late. 82 passengers have connections in next 90 min. 14 on 3 long-haul services with hard cut-off times. Turnaround: 35 min minimum.',o:[{k:'A',t:'Protect 14 long-haul connections immediately. Fast-track BA2201 turnaround. Brief customer teams on 68 short-haul impacts.',op:true},{k:'B',t:'Wait for confirmed arrival time before making connection protection decisions.',op:false},{k:'C',t:'Protect all 82 connections equally. Hold all 3 long-haul services.',op:false}]},
+    {t:'SESSION-WG-003 / RUNWAY-CLOSURE / TRIAGE',l:'⚡ Inject — T+03 min',x:'Vehicle incursion on primary runway. Closed. 3 aircraft on final approach (8nm, 12nm, 19nm). Closure: 30 min to 4 hours. 8 aircraft in holding stack, varying fuel states.',o:[{k:'A',t:'Go-around all 3 final approach aircraft. Coordinate divert routing. Notify destination welfare teams.',op:true},{k:'B',t:'Go-around 8nm aircraft only. Others hold pending clearance timeline.',op:false},{k:'C',t:'ATC responsibility — monitor and stand by for ATC instruction.',op:false}]},
+    {t:'SESSION-WG-003 / GROUND-STOP / RECOVERY',l:'⚡ Inject — T+32 min',x:'ATFM ground stop lifted. 6 aircraft held 2h20. Crew rest compromised on 2 services. 340 passengers need rebooking or welfare. 4 departure slots available next 90 min.',o:[{k:'A',t:'Prioritise by passenger impact: highest connection density first. Fresh crew for 2 services. Welfare protocol for 340 passengers.',op:true},{k:'B',t:'Operate in original sequence to minimise crew plan disruption.',op:false},{k:'C',t:'Operate 4 shortest sectors first to clear stand queue.',op:false}]}
+  ];
+ 
+  function setS(i){
+    document.querySelectorAll('.stab').forEach((t,j)=>t.classList.toggle('on',i===j));
+    const s=SC[i];
+    document.getElementById('stbar').textContent=s.t;
+    document.getElementById('slbl').textContent=s.l;
+    document.getElementById('stxt').textContent=s.x;
+    document.getElementById('sopts').innerHTML=s.o.map(o=>`<div class="opt${o.op?' op':''}"><span class="ok">${o.k}</span><span class="ot">${o.t}</span>${o.op?'<span class="obg">Optimal</span>':''}</div>`).join('');
+  }
+ 
+  function switchTab(t){
+    document.getElementById('panel-i').classList.toggle('on',t==='i');
+    document.getElementById('panel-s').classList.toggle('on',t==='s');
+    document.querySelectorAll('.nt').forEach(n=>{
+      n.classList.remove('ai','as');
+      const txt=n.textContent.trim().toLowerCase();
+      if(txt.includes('intel')&&t==='i')n.classList.add('ai');
+      if(txt.includes('war')&&t==='s')n.classList.add('as');
     });
-
-    // Trigger hero animations immediately
-    setTimeout(() => {
-      document.querySelectorAll('#hero .fade-up').forEach(el => {
-        el.classList.add('visible');
-      });
-    }, 100);
-
-    // Scenario switcher
-    const scenarios = [
-      {
-        title: 'SHEPHERD / SESSION-WG-003 / CREW-LIMITS / TRIAGE',
-        injectLabel: '⚡ Live Inject — T+14 Minutes',
-        inject: 'Delay cascade has pushed 4 crews into their final 2 hours of duty simultaneously. Standby pool has 2 crews available. Must select 2 of 4 FTL-affected flights to operate. Flights: BA721 (82 connections, 4h20), BA722 (12 connections, 1h45), BA723 (45 connections, crew at destination), BA724 (last service to thin route, 180 pax).',
-        options: [
-          { key: 'A', text: 'Allocate to BA721 (highest connection risk) and BA724 (no alternative service). Cancel BA722 and BA723.', optimal: true },
-          { key: 'B', text: 'Allocate to longest-haul flights BA721 and BA723 by flight time.', optimal: false },
-          { key: 'C', text: 'Allocate to easiest-to-operate flights to maximise operational success probability.', optimal: false },
-        ]
-      },
-      {
-        title: 'SHEPHERD / SESSION-WG-003 / CONNECTION-CASCADE / RECOGNITION',
-        injectLabel: '⚡ Live Inject — T+08 Minutes',
-        inject: 'Inbound BA2201 is now tracking 47 minutes late. 82 passengers have connections departing in the next 90 minutes. 14 are on 3 long-haul services with hard cut-off times. Ground time for turnaround: 35 minutes minimum.',
-        options: [
-          { key: 'A', text: 'Immediately protect the 14 long-haul connections. Fast-track turnaround on BA2201. Brief contact centre on 68 impacted short-haul passengers.', optimal: true },
-          { key: 'B', text: 'Wait for confirmed arrival time before making connection protection decisions.', optimal: false },
-          { key: 'C', text: 'Protect all 82 connections equally. Hold all 3 connecting long-haul services.', optimal: false },
-        ]
-      },
-      {
-        title: 'SHEPHERD / SESSION-WG-003 / RUNWAY-CLOSURE / TRIAGE',
-        injectLabel: '⚡ Live Inject — T+03 Minutes',
-        inject: 'Emergency services report vehicle incursion on primary runway. Runway closed. 3 aircraft on final approach (8nm, 12nm, 19nm). Closure duration unknown — 30 minutes to 4 hours. 8 aircraft in holding stack with varying fuel states.',
-        options: [
-          { key: 'A', text: 'Immediate go-around for all 3 final approach aircraft. Coordinate divert routing with ATC. Notify destination welfare teams.', optimal: true },
-          { key: 'B', text: 'Go-around for 8nm aircraft only. Others can hold pending runway clearance timeline.', optimal: false },
-          { key: 'C', text: 'ATC responsibility — monitor and stand by for ATC instruction.', optimal: false },
-        ]
-      },
-      {
-        title: 'SHEPHERD / SESSION-WG-003 / GROUND-STOP / RECOVERY',
-        injectLabel: '⚡ Live Inject — T+32 Minutes',
-        inject: 'ATFM ground stop lifted. 6 aircraft held for 2h20 minutes. Crew rest windows now compromised on 2 services. 340 passengers require rebooking or welfare. Airport slot coordinator confirms 4 departure slots available in next 90 minutes.',
-        options: [
-          { key: 'A', text: 'Prioritise by passenger impact: highest connection density first. Request fresh crew for 2 compromised services. Activate welfare protocol immediately for 340 passengers.', optimal: true },
-          { key: 'B', text: 'Operate in original flight sequence to minimise crew plan disruption.', optimal: false },
-          { key: 'C', text: 'Operate the 4 shortest sectors first to clear the stand queue.', optimal: false },
-        ]
-      }
-    ];
-
-    function setScenario(idx) {
-      const tabs = document.querySelectorAll('.scenario-tab');
-      tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
-      const s = scenarios[idx];
-      document.getElementById('scenario-bar-title').textContent = s.title;
-      const injectEl = document.getElementById('scenario-inject');
-      injectEl.querySelector('.inject-label').textContent = s.injectLabel;
-      document.getElementById('scenario-inject-text').textContent = s.inject;
-      const optContainer = document.getElementById('scenario-options');
-      optContainer.innerHTML = s.options.map(o => `
-        <div class="option-item ${o.optimal ? 'optimal' : ''}">
-          <span class="option-key">${o.key}</span>
-          <span class="option-text">${o.text}</span>
-          ${o.optimal ? '<span class="option-badge">Optimal</span>' : ''}
-        </div>
-      `).join('');
-    }
-
-    // Smooth nav active state
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-links a');
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(s => {
-        if (window.scrollY >= s.offsetTop - 80) current = s.id;
-      });
-      navLinks.forEach(a => {
-        a.style.color = a.getAttribute('href') === `#${current}` ? 'var(--white)' : '';
-      });
+    document.querySelectorAll('.htab').forEach(n=>{
+      n.classList.remove('on');
+      if(n.classList.contains('ti')&&t==='i')n.classList.add('on');
+      if(n.classList.contains('ts')&&t==='s')n.classList.add('on');
     });
-  </script>
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+</script>
 </body>
 </html>
