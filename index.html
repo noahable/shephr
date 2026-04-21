@@ -1,611 +1,1037 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shepherd — Disruption Intelligence for Aviation</title>
-  <meta name="description" content="Shepherd gives aviation operations teams real-time disruption intelligence and simulation-based war games training to build the decision muscle memory to act on it." />
-  <meta property="og:title" content="Shepherd — Disruption Intelligence for Aviation" />
-  <meta property="og:description" content="Live disruption intelligence and war games simulation for aviation operations teams." />
-  <meta property="og:type" content="website" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shepherd — Better Decisions. Faster Recovery.</title>
+  <meta name="description" content="Shepherd improves the quality and speed of aviation operations decisions — before, during, and after disruption. War games simulation, live decision intelligence, and institutional learning in one platform."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg:#07090f;--s1:#0c0f1a;--s2:#0f1220;--bd:#161d2e;--bd2:#1e2840;
-      --gold:#c9a84c;--gdim:#8a6e2f;--gg:rgba(201,168,76,0.1);
-      --blue:#4a9eff;--bdim:rgba(74,158,255,0.08);
-      --w:#d8e0f0;--mu:#7a869e;--di:#3d4a60;
-      --ser:'Playfair Display',Georgia,serif;
-      --mo:'DM Mono',monospace;
-      --sa:'Sora',system-ui,sans-serif;
+      --bg:       #07090f;
+      --s1:       #0b0e19;
+      --s2:       #0f1220;
+      --s3:       #141826;
+      --b1:       #161d2e;
+      --b2:       #1e2840;
+      --b3:       rgba(201,168,76,0.2);
+      --gold:     #c9a84c;
+      --gold-lt:  #e2c97a;
+      --gold-glow:rgba(201,168,76,0.12);
+      --gold-dim: #8a6e2f;
+      --white:    #d8e0f0;
+      --muted:    #7a869e;
+      --dim:      #3d4a60;
+      --red:      #e05252;
+      --green:    #4ecb82;
+      --serif:    'Playfair Display', Georgia, serif;
+      --mono:     'DM Mono', monospace;
+      --sans:     'Sora', system-ui, sans-serif;
     }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{background:var(--bg);color:var(--w);font-family:var(--sa);font-size:15px;line-height:1.6;overflow-x:hidden}
-    ::-webkit-scrollbar{width:3px}
-    ::-webkit-scrollbar-track{background:var(--bg)}
-    ::-webkit-scrollbar-thumb{background:var(--di);border-radius:2px}
-    a{text-decoration:none}
-    .w{max-width:1080px;margin:0 auto;padding:0 36px}
  
-    /* NAV */
-    nav{
-      position:sticky;top:0;height:54px;
-      background:rgba(7,9,15,0.97);
-      border-bottom:1px solid var(--bd);
-      display:flex;align-items:center;justify-content:space-between;
-      padding:0 36px;z-index:100;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+ 
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--sans);
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 1.65;
+      overflow-x: hidden;
     }
-    .nb{display:flex;align-items:center;gap:9px}
-    .nd{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:pd 3s ease-in-out infinite}
-    @keyframes pd{0%,100%{opacity:1}50%{opacity:.55}}
-    .nw{font-family:var(--mo);font-size:11px;color:var(--gold);letter-spacing:.22em;text-transform:uppercase}
-    .nl{display:flex;align-items:center;gap:6px;list-style:none}
-    .nt{font-family:var(--mo);font-size:10px;padding:7px 18px;border-radius:2px;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--bd);background:transparent;color:var(--mu);transition:all .2s}
-    .nt.ai{color:var(--blue);border-color:rgba(74,158,255,.35);background:rgba(74,158,255,.06)}
-    .nt.as{color:var(--gold);border-color:rgba(201,168,76,.35);background:var(--gg)}
-    .nt:hover{color:var(--w);border-color:var(--bd2)}
-    .ncta{font-family:var(--mo);font-size:10px;color:var(--gold);border:1px solid var(--gdim);padding:7px 16px;border-radius:2px;letter-spacing:.1em;text-transform:uppercase;transition:background .2s}
-    .ncta:hover{background:var(--gg)}
  
-    /* HERO */
-    .hero{padding:80px 0 60px;border-bottom:1px solid var(--bd);position:relative;overflow:hidden}
-    .hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(74,158,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(74,158,255,.025) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse 90% 70% at 50% 50%,black 20%,transparent 100%)}
-    .hero-in{position:relative;text-align:center;max-width:720px;margin:0 auto}
-    .htag{font-family:var(--mo);font-size:10px;color:var(--gold);letter-spacing:.18em;text-transform:uppercase;margin-bottom:24px;opacity:.85}
-    .hh1{font-family:var(--ser);font-size:clamp(38px,5vw,64px);font-weight:500;line-height:1.1;color:var(--w);margin-bottom:20px;letter-spacing:-.02em}
-    .hh1 em{font-style:italic;color:var(--gold)}
-    .hsub{font-size:16px;font-weight:300;color:var(--mu);line-height:1.75;max-width:580px;margin:0 auto 40px}
-    .htabs{display:inline-flex;gap:3px;background:var(--s1);border:1px solid var(--bd);border-radius:3px;padding:4px}
-    .htab{font-family:var(--mo);font-size:11px;padding:11px 36px;border-radius:2px;cursor:pointer;letter-spacing:.12em;text-transform:uppercase;border:none;background:transparent;transition:all .25s}
-    .htab.ti{color:var(--blue)}.htab.ts{color:var(--gold)}
-    .htab.ti.on{background:rgba(74,158,255,.1);border:1px solid rgba(74,158,255,.25)}
-    .htab.ts.on{background:var(--gg);border:1px solid rgba(201,168,76,.25)}
-    .htab:not(.on){color:var(--di)}.htab:hover:not(.on){color:var(--mu)}
+    ::selection { background: var(--gold); color: #000; }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--dim); }
  
-    .panel{display:none}.panel.on{display:block}
+    /* NOISE */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: 0.5;
+    }
  
-    /* SHARED */
-    .pill{display:inline-flex;align-items:center;gap:7px;font-family:var(--mo);font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:5px 12px;border-radius:2px;margin-bottom:18px}
-    .pill.i{color:var(--blue);background:var(--bdim);border:1px solid rgba(74,158,255,.18)}
-    .pill.s{color:var(--gold);background:var(--gg);border:1px solid rgba(201,168,76,.18)}
-    .pdot{width:4px;height:4px;border-radius:50%}
-    .pill.i .pdot{background:var(--blue)}.pill.s .pdot{background:var(--gold)}
-    .sec{padding:80px 0;border-bottom:1px solid var(--bd)}
-    .sec-last{padding:80px 0}
-    .ey{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-    .ey span{font-family:var(--mo);font-size:9px;letter-spacing:.18em;text-transform:uppercase}
-    .ey span.i{color:var(--blue);opacity:.75}
-    .ey span.s{color:var(--gold);opacity:.75}
-    .tk{width:16px;height:1px}
-    .tki{background:var(--blue);opacity:.4}.tks{background:var(--gold);opacity:.4}
-    .sh2{font-family:var(--ser);font-size:clamp(24px,3vw,40px);font-weight:500;line-height:1.15;color:var(--w);margin-bottom:20px}
-    .sh2 em{font-style:italic}.sh2 em.i{color:var(--blue)}.sh2 em.s{color:var(--gold)}
-    .sb{font-size:15px;font-weight:300;color:var(--mu);line-height:1.75;max-width:560px}
-    .two{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
-    .four{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--bd);border:1px solid var(--bd);border-radius:2px;overflow:hidden}
-    .six{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--bd);border:1px solid var(--bd);border-radius:2px;overflow:hidden}
-    .fc{background:var(--s1);padding:30px 26px;transition:background .25s}
-    .fc:hover{background:var(--s2)}
-    .fnum{font-family:var(--mo);font-size:9px;letter-spacing:.1em;margin-bottom:12px}
-    .fnum.i{color:var(--blue);opacity:.5}.fnum.s{color:var(--gold);opacity:.5}
-    .ftit{font-family:var(--ser);font-size:17px;font-weight:500;color:var(--w);margin-bottom:8px;line-height:1.3}
-    .fdsc{font-size:13px;color:var(--mu);line-height:1.65;font-weight:300}
-    .fsigs{margin-top:14px;display:flex;flex-direction:column;gap:5px}
-    .fsig{display:flex;gap:7px;font-family:var(--mo);font-size:10px;color:var(--di);align-items:center}
-    .fsig::before{content:'';width:3px;height:3px;border-radius:50%;flex-shrink:0}
-    .fsig.i::before{background:var(--blue);opacity:.5}
-    .fsig.s::before{background:var(--gold);opacity:.5}
+    /* ── LAYOUT ── */
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 0 48px; position: relative; z-index: 1; }
+    section { position: relative; }
  
-    /* DASHBOARD MOCK */
-    .dmock{border:1px solid var(--bd);border-radius:2px;background:var(--s1);overflow:hidden;margin-top:4px}
-    .dbar{display:flex;align-items:center;gap:7px;padding:10px 16px;border-bottom:1px solid var(--bd);background:var(--bg)}
-    .dd{width:6px;height:6px;border-radius:50%}
-    .dl{background:#36d68a;animation:lp 2s ease-in-out infinite}
-    @keyframes lp{0%,100%{opacity:1;box-shadow:0 0 5px #36d68a}50%{opacity:.35;box-shadow:none}}
-    .dw{background:#ffb800}.dc{background:#ff4d4d}
-    .dtit{font-family:var(--mo);font-size:9px;color:var(--di);letter-spacing:.09em;margin-left:3px}
-    .dtime{font-family:var(--mo);font-size:9px;color:var(--di);margin-left:auto}
-    .dbody{padding:10px;display:flex;flex-direction:column;gap:5px}
-    .dr{display:flex;align-items:center;gap:9px;padding:8px 11px;background:var(--s2);border:1px solid var(--bd);border-radius:2px}
-    .dr.al{border-color:rgba(255,77,77,.2);background:rgba(255,77,77,.04)}
-    .dr.wn{border-color:rgba(255,184,0,.2);background:rgba(255,184,0,.04)}
-    .ds{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-    .ds.g{background:#36d68a}.ds.a{background:#ffb800}.ds.r{background:#ff4d4d}
-    .dfl{font-family:var(--mo);font-size:11px;color:var(--w);font-weight:500;width:52px;flex-shrink:0}
-    .ddt{font-size:11px;color:var(--mu);flex:1}
-    .dbg{font-family:var(--mo);font-size:8px;padding:2px 7px;border-radius:1px;flex-shrink:0;letter-spacing:.07em;text-transform:uppercase}
-    .dbg.r{color:#ff6b6b;background:rgba(255,77,77,.1);border:1px solid rgba(255,77,77,.2)}
-    .dbg.a{color:#ffb800;background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.2)}
-    .dbg.b{color:var(--blue);background:var(--bdim);border:1px solid rgba(74,158,255,.2)}
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; height: 58px;
+      background: rgba(7,9,15,0.9); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--b1);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; z-index: 200;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--gold); box-shadow: 0 0 10px var(--gold);
+      animation: pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.7;transform:scale(0.9)} }
+    .nav-word { font-family: var(--mono); font-size: 13px; letter-spacing: 0.16em; color: var(--white); text-transform: uppercase; }
+    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+    .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--muted); text-decoration: none; text-transform: uppercase; transition: color .2s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      background: var(--gold) !important; color: var(--bg) !important;
+      padding: 8px 18px; border-radius: 2px; font-weight: 500 !important;
+      transition: background .2s !important;
+    }
+    .nav-cta:hover { background: var(--gold-lt) !important; }
  
-    /* AUDIENCE CARDS */
-    .aud{padding:16px;border:1px solid rgba(74,158,255,.15);border-radius:2px;background:rgba(74,158,255,.04);margin-bottom:10px}
-    .aud-t{font-family:var(--mo);font-size:9px;color:var(--blue);letter-spacing:.15em;text-transform:uppercase;margin-bottom:5px}
-    .aud-b{font-size:13px;color:var(--mu);line-height:1.55}
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding-top: 58px;
+      overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute;
+      width: 800px; height: 800px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.07) 0%, transparent 70%);
+      top: -200px; left: -300px; pointer-events: none;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+    }
+    .hero-inner { padding: 80px 0 60px; }
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em;
+      color: var(--gold); text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .hero-kicker::before { content: ''; width: 28px; height: 1px; background: var(--gold); }
  
-    /* CREDENTIALS */
-    .cred{flex:1;padding:20px;border:1px solid var(--bd);border-radius:2px;background:var(--s1);display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
-    .cion{width:28px;height:28px;background:var(--gg);border:1px solid rgba(201,168,76,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px}
-    .ctit{font-family:var(--mo);font-size:9px;color:var(--gold);letter-spacing:.11em;text-transform:uppercase;margin-bottom:5px}
-    .cbod{font-size:13px;color:var(--mu);line-height:1.6}
+    h1 {
+      font-family: var(--serif); font-weight: 600;
+      font-size: clamp(44px, 6vw, 80px);
+      line-height: 1.08; letter-spacing: -0.02em;
+      color: #fff; margin-bottom: 28px; max-width: 820px;
+    }
+    h1 em { font-style: italic; color: var(--gold-lt); }
  
-    /* SCENARIO TABS */
-    .stabs{display:flex;gap:2px;margin-bottom:18px;background:var(--s1);border:1px solid var(--bd);border-radius:2px;padding:3px}
-    .stab{flex:1;padding:8px 10px;font-family:var(--mo);font-size:10px;letter-spacing:.09em;text-transform:uppercase;background:transparent;border:none;color:var(--mu);cursor:pointer;border-radius:1px;transition:all .2s}
-    .stab.on{background:var(--s2);color:var(--gold);border:1px solid var(--bd2)}
-    .sdisp{border:1px solid var(--bd);border-radius:2px;background:var(--s1);overflow:hidden}
-    .shbar{display:flex;align-items:center;gap:7px;padding:10px 16px;border-bottom:1px solid var(--bd);background:var(--bg)}
-    .dot3{width:6px;height:6px;border-radius:50%}
-    .dot3.r{background:#ff4d4d}.dot3.y{background:#ffb800}.dot3.g{background:#36d68a}
-    .stbar{font-family:var(--mo);font-size:9px;color:var(--di);letter-spacing:.08em;margin-left:3px}
-    .sbod{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .sinj{padding:14px;background:rgba(255,72,72,.04);border:1px solid rgba(255,72,72,.12);border-radius:2px}
-    .silb{font-family:var(--mo);font-size:8px;color:#ff6b6b;letter-spacing:.15em;text-transform:uppercase;margin-bottom:7px}
-    .sitx{font-size:12px;color:var(--mu);line-height:1.6}
-    .sopts{display:flex;flex-direction:column;gap:5px}
-    .opt{padding:10px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:2px;display:flex;gap:8px;align-items:flex-start;transition:border-color .2s}
-    .opt.op{border-color:rgba(201,168,76,.3);background:rgba(201,168,76,.04)}
-    .ok{font-family:var(--mo);font-size:10px;color:var(--gold);font-weight:500;flex-shrink:0;width:12px}
-    .ot{font-size:12px;color:var(--mu);line-height:1.45}
-    .obg{font-family:var(--mo);font-size:8px;color:var(--gold);background:var(--gg);border:1px solid rgba(201,168,76,.2);padding:1px 6px;border-radius:1px;margin-left:auto;flex-shrink:0;align-self:center}
+    .hero-sub {
+      font-size: 17px; font-weight: 300; color: var(--muted);
+      max-width: 560px; line-height: 1.75; margin-bottom: 44px;
+    }
+    .hero-actions { display: flex; gap: 16px; align-items: center; }
+    .btn-primary {
+      background: var(--gold); color: var(--bg);
+      padding: 14px 28px; border-radius: 2px;
+      font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em;
+      text-transform: uppercase; text-decoration: none; font-weight: 500;
+      transition: background .2s, transform .15s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--gold-lt); transform: translateY(-1px); }
+    .btn-ghost {
+      color: var(--muted); border: 1px solid var(--b2);
+      padding: 14px 28px; border-radius: 2px;
+      font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em;
+      text-transform: uppercase; text-decoration: none;
+      transition: color .2s, border-color .2s;
+      display: inline-block;
+    }
+    .btn-ghost:hover { color: var(--white); border-color: var(--dim); }
  
-    /* SCORECARD */
-    .sc{border:1px solid var(--bd);border-radius:2px;background:var(--s1);overflow:hidden}
-    .sch{padding:14px 20px;border-bottom:1px solid var(--bd);background:var(--bg);display:flex;justify-content:space-between;align-items:center}
-    .sct{font-family:var(--mo);font-size:10px;color:var(--mu);letter-spacing:.09em;text-transform:uppercase}
-    .sco{font-family:var(--mo);font-size:20px;color:var(--gold);font-weight:500}
-    .sdim{padding:12px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px}
-    .sdim:last-child{border-bottom:none}
-    .dn{font-size:13px;color:var(--w);width:160px;flex-shrink:0}
-    .dbt{flex:1;height:2px;background:var(--bd);border-radius:1px;overflow:hidden}
-    .dbf{height:100%;background:var(--gold);border-radius:1px}
-    .dsc{font-family:var(--mo);font-size:11px;color:var(--gold);width:32px;text-align:right;flex-shrink:0}
+    /* HERO OUTCOME STRIP */
+    .outcome-strip {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--b1);
+      border-bottom: 1px solid var(--b1);
+      margin-top: 80px;
+    }
+    .outcome-cell {
+      padding: 32px 40px;
+      border-right: 1px solid var(--b1);
+      position: relative;
+    }
+    .outcome-cell:last-child { border-right: none; }
+    .outcome-num {
+      font-family: var(--serif); font-size: 48px; font-weight: 600;
+      color: var(--gold); line-height: 1; margin-bottom: 8px;
+    }
+    .outcome-label { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .outcome-label strong { color: var(--white); font-weight: 400; display: block; margin-bottom: 2px; }
  
-    /* CTA */
-    .cta-block{text-align:center;max-width:560px;margin:0 auto}
-    .cta-block .sh2{margin:0 auto 16px}
-    .cta-block .sb{margin:0 auto 36px;text-align:center}
-    .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-    .bp{font-family:var(--mo);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--bg);background:var(--gold);padding:13px 26px;border-radius:2px;transition:opacity .2s;display:inline-block}
-    .bp:hover{opacity:.85}
-    .bg2{font-family:var(--mo);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);border:1px solid var(--bd2);padding:13px 26px;border-radius:2px;transition:color .2s,border-color .2s;display:inline-block;cursor:pointer;background:transparent}
-    .bg2:hover{color:var(--w);border-color:var(--mu)}
-    .cta-fine{margin-top:18px;font-family:var(--mo);font-size:10px;color:var(--di);letter-spacing:.07em}
+    /* ── SECTION COMMON ── */
+    .section-pad { padding: 120px 0; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+      color: var(--gold); text-transform: uppercase; margin-bottom: 24px;
+    }
+    .eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--gold); }
+    h2 {
+      font-family: var(--serif); font-size: clamp(32px, 4vw, 52px);
+      font-weight: 600; line-height: 1.12; color: #fff;
+      margin-bottom: 24px;
+    }
+    h2 em { font-style: italic; color: var(--gold-lt); }
+    .lead {
+      font-size: 16px; color: var(--muted); max-width: 560px;
+      line-height: 1.75; font-weight: 300;
+    }
  
-    /* INSIGHT BLOCK */
-    .iblock{margin-top:20px;padding:16px;background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.15);border-radius:2px}
-    .ilbl{font-family:var(--mo);font-size:8px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:7px}
-    .itxt{font-size:13px;color:var(--mu);line-height:1.65}
+    /* ── THESIS ── */
+    #thesis { background: var(--s1); border-top: 1px solid var(--b1); border-bottom: 1px solid var(--b1); }
+    .thesis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .thesis-quote {
+      font-family: var(--serif); font-size: clamp(22px, 3vw, 34px);
+      font-weight: 400; font-style: italic; line-height: 1.4;
+      color: var(--white); border-left: 2px solid var(--gold);
+      padding-left: 28px;
+    }
+    .thesis-quote cite {
+      display: block; margin-top: 20px;
+      font-family: var(--mono); font-size: 11px; font-style: normal;
+      letter-spacing: 0.12em; color: var(--dim); text-transform: uppercase;
+    }
+    .thesis-body p { font-size: 15px; color: var(--muted); line-height: 1.75; margin-bottom: 16px; }
+    .thesis-body p:last-child { margin-bottom: 0; }
+    .thesis-body strong { color: var(--white); font-weight: 400; }
  
-    /* BAR HIGHLIGHT */
-    .bar-hl{display:flex;gap:0;align-items:stretch;margin-bottom:10px}
-    .bar-line{width:2px;background:var(--gold);flex-shrink:0;border-radius:0}
-    .bar-content{padding:4px 14px}
-    .bar-title{font-family:var(--mo);font-size:9px;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
-    .bar-body{font-size:13px;color:var(--mu);line-height:1.6}
+    /* ── HOW IT WORKS (Three modes) ── */
+    #modes { }
+    .modes-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end; margin-bottom: 72px; }
+    .modes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--b1); }
+    .mode-card {
+      background: var(--bg); padding: 44px 36px;
+      position: relative; overflow: hidden;
+      transition: background .3s;
+    }
+    .mode-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--gold); transform: scaleX(0); transform-origin: left;
+      transition: transform .4s ease;
+    }
+    .mode-card:hover { background: var(--s1); }
+    .mode-card:hover::before { transform: scaleX(1); }
+    .mode-num {
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+      color: var(--dim); text-transform: uppercase; margin-bottom: 20px;
+    }
+    .mode-when {
+      display: inline-block; font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.12em; color: var(--gold); background: var(--gold-glow);
+      border: 1px solid rgba(201,168,76,0.2); padding: 4px 10px;
+      border-radius: 2px; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .mode-title {
+      font-family: var(--serif); font-size: 24px; font-weight: 600;
+      color: #fff; margin-bottom: 12px; line-height: 1.2;
+    }
+    .mode-title em { font-style: italic; color: var(--gold-lt); }
+    .mode-desc { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+    .mode-outcomes { display: flex; flex-direction: column; gap: 8px; }
+    .mode-outcome {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 13px; color: var(--muted);
+    }
+    .mode-outcome::before { content: '→'; color: var(--gold); flex-shrink: 0; font-family: var(--mono); }
  
-    /* FOOTER */
-    footer{border-top:1px solid var(--bd);padding:28px 0;position:relative;z-index:1}
-    .ftri{display:flex;align-items:center;justify-content:space-between}
-    .fcp{font-family:var(--mo);font-size:10px;color:var(--di);letter-spacing:.07em}
-    .fls{display:flex;gap:22px;list-style:none}
-    .fls a{font-family:var(--mo);font-size:10px;color:var(--di);text-decoration:none;letter-spacing:.07em;text-transform:uppercase;transition:color .2s}
-    .fls a:hover{color:var(--mu)}
+    /* ── SIMULATION DEMO ── */
+    #demo { background: var(--s1); border-top: 1px solid var(--b1); border-bottom: 1px solid var(--b1); }
+    .demo-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: start; }
+    .demo-terminal {
+      background: var(--bg); border: 1px solid var(--b2);
+      border-radius: 4px; overflow: hidden; font-family: var(--mono);
+    }
+    .demo-bar {
+      background: var(--s2); border-bottom: 1px solid var(--b1);
+      padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+    }
+    .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .demo-dot.r { background: #e05252; }
+    .demo-dot.y { background: #e0b352; }
+    .demo-dot.g { background: var(--green); }
+    .demo-bar-title { font-size: 11px; color: var(--dim); letter-spacing: 0.1em; margin-left: auto; }
+    .demo-body { padding: 20px; }
+    .demo-inject {
+      border: 1px solid rgba(224,82,82,0.3); background: rgba(224,82,82,0.05);
+      border-radius: 3px; padding: 14px 16px; margin-bottom: 16px;
+    }
+    .demo-inject-lbl { font-size: 10px; color: var(--red); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 6px; }
+    .demo-inject-txt { font-size: 12px; color: var(--white); line-height: 1.6; }
+    .demo-option {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 14px; border: 1px solid var(--b1);
+      border-radius: 3px; margin-bottom: 8px; cursor: pointer;
+      transition: border-color .2s, background .2s; font-size: 12px; color: var(--muted);
+    }
+    .demo-option:hover { border-color: var(--b2); background: var(--s2); }
+    .demo-option.optimal { border-color: rgba(201,168,76,0.3); background: rgba(201,168,76,0.04); color: var(--white); }
+    .demo-key {
+      font-family: var(--mono); font-size: 11px; font-weight: 500;
+      color: var(--gold); background: rgba(201,168,76,0.1);
+      width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+      border-radius: 2px; flex-shrink: 0; margin-top: 1px;
+    }
+    .demo-badge {
+      font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em;
+      color: var(--green); background: rgba(78,203,130,0.1);
+      border: 1px solid rgba(78,203,130,0.2); padding: 2px 7px;
+      border-radius: 2px; text-transform: uppercase; margin-left: auto; flex-shrink: 0; align-self: center;
+    }
  
-    /* MOBILE */
-    @media(max-width:768px){
-      .w{padding:0 20px}
-      nav{padding:0 20px}
-      .nl .nt{display:none}
-      .two{grid-template-columns:1fr;gap:40px}
-      .four,.six{grid-template-columns:1fr}
-      .sbod{grid-template-columns:1fr}
-      .stabs{flex-wrap:wrap}
-      .btns{flex-direction:column;align-items:center}
+    /* SCORE CARD */
+    .score-card {
+      background: var(--bg); border: 1px solid var(--b2); border-radius: 4px; overflow: hidden;
+    }
+    .score-hdr {
+      background: var(--s2); border-bottom: 1px solid var(--b1);
+      padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .score-hdr-title { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.1em; }
+    .score-hdr-num {
+      font-family: var(--serif); font-size: 26px; font-weight: 600; color: var(--gold);
+    }
+    .score-dims { padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+    .score-dim { display: grid; grid-template-columns: 140px 1fr 36px; gap: 12px; align-items: center; }
+    .score-dim-name { font-size: 12px; color: var(--muted); }
+    .score-track { height: 4px; background: var(--b2); border-radius: 2px; overflow: hidden; }
+    .score-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 1.2s ease; }
+    .score-val { font-family: var(--mono); font-size: 12px; color: var(--white); text-align: right; }
+    .score-insight {
+      margin: 0 24px 20px; padding: 14px 16px;
+      background: rgba(201,168,76,0.05); border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 3px;
+    }
+    .score-insight-lbl { font-family: var(--mono); font-size: 10px; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
+    .score-insight-txt { font-size: 12px; color: var(--muted); line-height: 1.6; }
+ 
+    /* ── LIVE INTEL ── */
+    #intel { }
+    .intel-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .intel-dashboard {
+      background: var(--bg); border: 1px solid var(--b2); border-radius: 4px; overflow: hidden;
+    }
+    .intel-bar {
+      background: var(--s2); border-bottom: 1px solid var(--b1);
+      padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .intel-bar-l { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
+    .intel-bar-r { font-family: var(--mono); font-size: 10px; color: var(--red); letter-spacing: 0.1em; }
+    .intel-rows { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+    .intel-row {
+      display: grid; grid-template-columns: 60px 1fr auto;
+      gap: 12px; align-items: center;
+      padding: 12px 14px; border-radius: 3px; border: 1px solid transparent;
+      font-size: 12px; transition: border-color .2s;
+    }
+    .intel-row.alert { border-color: rgba(224,82,82,0.25); background: rgba(224,82,82,0.04); }
+    .intel-row.warn { border-color: rgba(224,179,82,0.2); background: rgba(224,179,82,0.03); }
+    .intel-row.ok { border-color: var(--b1); }
+    .intel-row:hover { border-color: var(--b2); }
+    .intel-flight { font-family: var(--mono); font-weight: 500; color: var(--white); }
+    .intel-info { color: var(--muted); line-height: 1.4; }
+    .intel-tag {
+      font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 3px 8px; border-radius: 2px; white-space: nowrap;
+    }
+    .intel-tag.r { color: var(--red); background: rgba(224,82,82,0.1); border: 1px solid rgba(224,82,82,0.2); }
+    .intel-tag.a { color: #e0b352; background: rgba(224,179,82,0.08); border: 1px solid rgba(224,179,82,0.2); }
+    .intel-tag.g { color: var(--green); background: rgba(78,203,130,0.08); border: 1px solid rgba(78,203,130,0.2); }
+    .intel-copilot {
+      margin: 8px; padding: 14px 16px;
+      background: rgba(201,168,76,0.05); border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 3px;
+    }
+    .intel-copilot-lbl { font-family: var(--mono); font-size: 10px; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+    .intel-copilot-rec { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .intel-copilot-rec strong { color: var(--white); }
+ 
+    /* ── SCORING DIMENSIONS ── */
+    #scoring { background: var(--s1); border-top: 1px solid var(--b1); border-bottom: 1px solid var(--b1); }
+    .scoring-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end; margin-bottom: 64px; }
+    .dims-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--b1); }
+    .dim-card {
+      background: var(--bg); padding: 32px 24px;
+      position: relative; overflow: hidden;
+    }
+    .dim-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: var(--gold); opacity: 0; transition: opacity .3s;
+    }
+    .dim-card:hover::after { opacity: 1; }
+    .dim-n { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.14em; margin-bottom: 16px; }
+    .dim-name { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--white); margin-bottom: 10px; line-height: 1.25; }
+    .dim-desc { font-size: 12px; color: var(--muted); line-height: 1.65; }
+    .dim-weight {
+      margin-top: 16px; font-family: var(--mono); font-size: 10px;
+      color: var(--gold); letter-spacing: 0.1em;
+    }
+ 
+    /* ── IOSA ── */
+    #iosa { }
+    .iosa-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .iosa-reqs { display: flex; flex-direction: column; gap: 8px; }
+    .iosa-req {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px 18px; border: 1px solid var(--b1);
+      border-radius: 3px; background: var(--s1);
+      font-size: 13px; transition: border-color .2s;
+    }
+    .iosa-req:hover { border-color: rgba(201,168,76,0.2); }
+    .iosa-check {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: rgba(78,203,130,0.1); border: 1px solid rgba(78,203,130,0.3);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 10px; color: var(--green); margin-top: 1px;
+    }
+    .iosa-req-title { color: var(--white); font-weight: 400; margin-bottom: 2px; }
+    .iosa-req-sub { font-size: 12px; color: var(--dim); }
+    .iosa-callout {
+      padding: 32px 36px; background: rgba(201,168,76,0.06);
+      border: 1px solid rgba(201,168,76,0.2); border-radius: 4px;
+      margin-top: 24px;
+    }
+    .iosa-callout-lbl { font-family: var(--mono); font-size: 10px; color: var(--gold); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 10px; }
+    .iosa-callout-text {
+      font-family: var(--serif); font-size: 20px; font-weight: 400;
+      color: var(--white); line-height: 1.45;
+    }
+ 
+    /* ── FLYWHEEL ── */
+    #flywheel { background: var(--s1); border-top: 1px solid var(--b1); border-bottom: 1px solid var(--b1); }
+    .flywheel-intro { text-align: center; max-width: 600px; margin: 0 auto 72px; }
+    .flywheel-intro .eyebrow { justify-content: center; }
+    .flywheel-intro h2 { text-align: center; }
+    .flywheel-intro .lead { margin: 0 auto; text-align: center; }
+    .fw-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; position: relative; }
+    .fw-steps::before {
+      content: ''; position: absolute;
+      top: 32px; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), var(--gold), var(--gold-dim), transparent);
+      z-index: 0;
+    }
+    .fw-step {
+      text-align: center; padding: 0 16px; position: relative; z-index: 1;
+    }
+    .fw-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--bg); border: 1px solid var(--b3);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      font-family: var(--mono); font-size: 18px; color: var(--gold);
+    }
+    .fw-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
+    .fw-text { font-size: 12px; color: var(--muted); line-height: 1.6; }
+ 
+    /* ── CREDENTIALS ── */
+    #creds { }
+    .creds-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--b1); }
+    .cred-card {
+      background: var(--bg); padding: 48px 44px;
+      position: relative; overflow: hidden;
+    }
+    .cred-over {
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+      color: var(--dim); text-transform: uppercase; margin-bottom: 12px;
+    }
+    .cred-title {
+      font-family: var(--serif); font-size: 22px; font-weight: 600;
+      color: var(--white); margin-bottom: 16px; line-height: 1.3;
+    }
+    .cred-rule { width: 32px; height: 1px; background: var(--gold); margin-bottom: 20px; }
+    .cred-body { font-size: 14px; color: var(--muted); line-height: 1.75; }
+    .cred-body p { margin-bottom: 12px; }
+    .cred-body p:last-child { margin-bottom: 0; }
+    .cred-body strong { color: var(--white); font-weight: 400; }
+ 
+    /* ── CTA ── */
+    #cta { padding: 140px 0; text-align: center; }
+    .cta-glow {
+      position: absolute; width: 600px; height: 600px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, transparent 65%);
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .cta-inner { max-width: 640px; margin: 0 auto; }
+    .cta-inner h2 { font-size: clamp(36px, 5vw, 60px); }
+    .cta-sub { font-size: 16px; color: var(--muted); max-width: 460px; margin: 0 auto 44px; line-height: 1.7; }
+    .cta-actions { display: flex; gap: 16px; justify-content: center; }
+    .cta-fine { margin-top: 28px; font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: 0.08em; }
+ 
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--b1); padding: 36px 0;
+      position: relative; z-index: 1;
+    }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; }
+    .footer-brand { display: flex; align-items: center; gap: 10px; }
+    .footer-copy { font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: 0.08em; }
+    .footer-links { display: flex; gap: 28px; list-style: none; }
+    .footer-links a { font-family: var(--mono); font-size: 11px; color: var(--dim); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color .2s; }
+    .footer-links a:hover { color: var(--muted); }
+ 
+    /* ── ANIMATIONS ── */
+    .fu { opacity: 0; transform: translateY(28px); transition: opacity .75s ease, transform .75s ease; }
+    .fu.vis { opacity: 1; transform: none; }
+    .fd1 { transition-delay: .1s; }
+    .fd2 { transition-delay: .2s; }
+    .fd3 { transition-delay: .3s; }
+    .fd4 { transition-delay: .4s; }
+ 
+    /* ── MOBILE ── */
+    @media(max-width: 768px) {
+      .wrap { padding: 0 24px; }
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .outcome-strip { grid-template-columns: 1fr 1fr; }
+      .outcome-cell:nth-child(3) { grid-column: 1/-1; border-top: 1px solid var(--b1); border-right: none; }
+      .thesis-grid, .modes-intro, .demo-layout, .intel-layout, .iosa-layout, .creds-grid, .scoring-intro { grid-template-columns: 1fr; gap: 48px; }
+      .modes-grid, .dims-grid { grid-template-columns: 1fr; }
+      .fw-steps { grid-template-columns: 1fr 1fr; }
+      h1 { font-size: 36px; }
     }
   </style>
 </head>
 <body>
  
+<!-- NAV -->
 <nav>
-  <div class="nb"><div class="nd"></div><span class="nw">Shepherd</span></div>
-  <ul class="nl">
-    <li><button class="nt ai" onclick="switchTab('i')">Intelligence</button></li>
-    <li><button class="nt" onclick="switchTab('s')">War Games</button></li>
-    <li><a href="/cdn-cgi/l/email-protection#4b232e2727240b38232e3b2339652224" class="ncta">Request Access</a></li>
+  <a href="#" class="nav-brand">
+    <div class="nav-dot"></div>
+    <span class="nav-word">Shepherd</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#modes">Platform</a></li>
+    <li><a href="#demo">Simulation</a></li>
+    <li><a href="#scoring">Scoring</a></li>
+    <li><a href="#iosa">IOSA</a></li>
+    <li><a href="#cta" class="nav-cta">Request Briefing</a></li>
   </ul>
 </nav>
  
-<div class="hero">
-  <div class="hgrid"></div>
-  <div class="w">
-    <div class="hero-in">
-      <div class="htag">Disruption Intelligence · War Games Simulation</div>
-      <h1 class="hh1">See the cascade coming.<br/><em>Train your teams to stop it.</em></h1>
-      <p class="hsub">Shepherd gives aviation operations teams two things: real-time intelligence to see disruption risk before it compounds — and simulation-based training to build the decision muscle memory to act on it decisively when it does.</p>
-      <div class="htabs">
-        <button class="htab ti on" onclick="switchTab('i')">Intelligence</button>
-        <button class="htab ts" onclick="switchTab('s')">War Games</button>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-kicker fu">Aviation Operations · Decision Intelligence Platform</div>
+      <h1 class="fu fd1">
+        Better decisions.<br/><em>Faster recovery.</em>
+      </h1>
+      <p class="hero-sub fu fd2">
+        Shepherd improves the quality and speed of aviation operations decisions — before disruption strikes, during the critical window, and after every event. Three deployment modes. One decision architecture.
+      </p>
+      <div class="hero-actions fu fd3">
+        <a href="#cta" class="btn-primary">Request a Briefing</a>
+        <a href="#modes" class="btn-ghost">See the Platform</a>
+      </div>
+    </div>
+    <div class="outcome-strip fu fd4">
+      <div class="outcome-cell">
+        <div class="outcome-num">20%</div>
+        <div class="outcome-label">
+          <strong>Faster time-to-first-decision</strong>
+          Target outcome by Session 5 — measured by scoring engine
+        </div>
+      </div>
+      <div class="outcome-cell">
+        <div class="outcome-num">+15pts</div>
+        <div class="outcome-label">
+          <strong>Cascade awareness improvement</strong>
+          Average gain Sessions 1–3 across controller cohorts
+        </div>
+      </div>
+      <div class="outcome-cell">
+        <div class="outcome-num">8 / 8</div>
+        <div class="outcome-label">
+          <strong>IOSA DSP requirements</strong>
+          All eight satisfied in a single platform — no parallel systems
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
  
-<!-- INTELLIGENCE PANEL -->
-<div id="panel-i" class="panel on">
+<!-- THESIS -->
+<section id="thesis">
+  <div class="wrap section-pad">
+    <div class="thesis-grid">
+      <div>
+        <blockquote class="thesis-quote fu">
+          "The more you depend on automated systems, the more dangerous it is when those systems fail — and the less capable your people are of taking back control."
+          <cite>The case for decision training — BA IT Outage, May 2017</cite>
+        </blockquote>
+      </div>
+      <div class="thesis-body fu fd1">
+        <p>Every incumbent vendor — Sabre, Amadeus, Lufthansa Systems — is building tools that make operations <strong>faster at optimising</strong> within a disruption. They are not building tools that make operations teams <strong>better at deciding</strong> when those optimisations hit their limits.</p>
+        <p>The pilot simulator analogy is exact: ATC candidates complete mandatory simulation before touching live traffic. Signallers train on simulators before managing train movements. <strong>OCC controllers are the only comparable high-consequence role without mandatory simulation.</strong></p>
+        <p>Shepherd closes that gap. Not as a training product — as a decision improvement system with three deployment modes and measurable outcomes.</p>
+      </div>
+    </div>
+  </div>
+</section>
  
-  <div class="sec">
-    <div class="w">
-      <div class="two">
-        <div>
-          <div class="pill i"><div class="pdot"></div>Pillar One</div>
-          <div class="ey"><div class="tk tki"></div><span class="i">Live Disruption Intelligence</span></div>
-          <h2 class="sh2">See the network.<br/><em class="i">Before it breaks.</em></h2>
-          <p class="sb">Shepherd's intelligence layer surfaces connection risk, network fragility, and cascade exposure in real time. Operations teams get the full downstream picture before the window to act closes — not after the cascade has already started.</p>
-          <div style="margin-top:28px">
-            <div class="bar-hl">
-              <div class="bar-line"></div>
-              <div class="bar-content">
-                <div class="bar-title">The Problem It Solves</div>
-                <div class="bar-body">Connection clusters, fragility scores, and cascade flags are scattered across systems — or not surfaced at all until the window to act has closed. Shepherd consolidates them into a single, proactive intelligence picture.</div>
-              </div>
+<!-- THREE MODES -->
+<section id="modes">
+  <div class="wrap section-pad">
+    <div class="modes-intro">
+      <div>
+        <div class="eyebrow fu">The Platform</div>
+        <h2 class="fu fd1">Three modes.<br/><em>One closed loop.</em></h2>
+      </div>
+      <p class="lead fu fd1">
+        Shepherd operates before disruption, during the critical window, and after every event. Each mode is independently deployable. Together they form a decision improvement flywheel that compounds over time.
+      </p>
+    </div>
+    <div class="modes-grid">
+      <div class="mode-card fu">
+        <div class="mode-num">Mode 01</div>
+        <div class="mode-when">Before Disruption</div>
+        <div class="mode-title">War Games<br/><em>Simulation</em></div>
+        <p class="mode-desc">Scored, scenario-based exercises that build the decision muscle memory that no optimisation tool can substitute. Controllers train on the exact constraint collisions — crew FTL, slot windows, connection clusters — that matter most when it's real.</p>
+        <div class="mode-outcomes">
+          <div class="mode-outcome">5-dimension scored decision tracking</div>
+          <div class="mode-outcome">Automated After Action Review</div>
+          <div class="mode-outcome">Benchmark comparison vs industry norms</div>
+          <div class="mode-outcome">IOSA DSP training evidence — automated</div>
+          <div class="mode-outcome">Executive War Games for C-suite</div>
+        </div>
+      </div>
+      <div class="mode-card fu fd1">
+        <div class="mode-num">Mode 02</div>
+        <div class="mode-when">During Disruption</div>
+        <div class="mode-title">Live Decision<br/><em>Intelligence</em></div>
+        <p class="mode-desc">The Decision Intelligence Copilot surfaces ranked recovery options with cost and legal exposure before the window closes. The Network Fragility Heatmap shows cascade risk before it materialises. T-656/24 compliance flagging prevents voluntary decisions from voiding the EU261 defence.</p>
+        <div class="mode-outcomes">
+          <div class="mode-outcome">Ranked recovery options with £ exposure</div>
+          <div class="mode-outcome">Network fragility scoring in real time</div>
+          <div class="mode-outcome">Codeshare and partner metal visibility</div>
+          <div class="mode-outcome">T-656/24 voluntary hold flagging</div>
+          <div class="mode-outcome">Cascade flag and impact mapping</div>
+        </div>
+      </div>
+      <div class="mode-card fu fd2">
+        <div class="mode-num">Mode 03</div>
+        <div class="mode-when">After Every Event</div>
+        <div class="mode-title">Post-Disruption<br/><em>Learning</em></div>
+        <p class="mode-desc">Every live disruption event automatically seeds the scenario library. The Post-Disruption Review module replays what happened against the optimal path — converting institutional knowledge into structured, scored training. The gap between what your team did and what they should have done becomes permanent learning, not a folder that gets filed.</p>
+        <div class="mode-outcomes">
+          <div class="mode-outcome">Automatic scenario library population</div>
+          <div class="mode-outcome">Live event replay against optimal path</div>
+          <div class="mode-outcome">Team performance delta — scored</div>
+          <div class="mode-outcome">Recommended focus for next session</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- SIMULATION DEMO -->
+<section id="demo">
+  <div class="wrap section-pad">
+    <div class="demo-layout">
+      <div>
+        <div class="eyebrow fu">Simulation</div>
+        <h2 class="fu fd1">Pressure that performs<br/><em>like the real thing.</em></h2>
+        <p class="lead fu fd2" style="margin-bottom:32px">Every scenario is timed, cascading, and scored. Controllers face the exact constraint collisions that produce bad decisions in live operations — crew FTL, connection clusters, and slot windows simultaneously.</p>
+        <div class="fu fd3" style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--muted)">
+            <span style="color:var(--gold);font-family:var(--mono);flex-shrink:0">01</span>
+            <span><strong style="color:var(--white);font-weight:400">Mission Rehearsal</strong> — Ingest tomorrow's actual SSIM schedule. Train on real flights before the shift starts. Not simulation. Mission rehearsal.</span>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--muted)">
+            <span style="color:var(--gold);font-family:var(--mono);flex-shrink:0">02</span>
+            <span><strong style="color:var(--white);font-weight:400">AI Injects</strong> — Dynamic scenario branches generated by the AI engine. Every session is different. Facilitators control tempo, escalation, and difficulty.</span>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--muted)">
+            <span style="color:var(--gold);font-family:var(--mono);flex-shrink:0">03</span>
+            <span><strong style="color:var(--white);font-weight:400">War Room View</strong> — Multi-participant sessions with live facilitator control, team benchmarking, and a shared operational picture that mirrors the real OCC environment.</span>
+          </div>
+        </div>
+      </div>
+      <div class="fu fd1">
+        <div class="demo-terminal" style="margin-bottom:16px">
+          <div class="demo-bar">
+            <div class="demo-dot r"></div>
+            <div class="demo-dot y"></div>
+            <div class="demo-dot g"></div>
+            <span class="demo-bar-title">SESSION WG-007 · T+22 MIN · CREW LIMITS</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-inject">
+              <div class="demo-inject-lbl">⚡ Live Inject — Crew FTL Critical</div>
+              <div class="demo-inject-txt">Engineering delay has pushed 3 crews into FTL-critical territory simultaneously. Standby pool: 2 crews. Must select 2 of 3 affected flights. BA721 (82 connections, 4h20 duty remaining). BA442 (12 connections, last service thin route). BA256 (44 connections, crew at base tonight).</div>
+            </div>
+            <div class="demo-option optimal">
+              <div class="demo-key">A</div>
+              <span>Assign standby to BA721 (highest connection risk) and BA442 (no alternative service). Cancel BA256 — crew positioning risk acceptable.</span>
+              <div class="demo-badge">Optimal</div>
+            </div>
+            <div class="demo-option">
+              <div class="demo-key">B</div>
+              <span>Assign to longest duty-remaining crews regardless of connection exposure.</span>
+            </div>
+            <div class="demo-option">
+              <div class="demo-key">C</div>
+              <span>Escalate to senior management — too many variables for individual decision.</span>
             </div>
           </div>
         </div>
-        <div>
-          <div class="dmock">
-            <div class="dbar">
-              <div class="dd dl"></div>
-              <span class="dtit">SHEPHERD / LIVE — 14:32 UTC</span>
-              <span class="dtime">Fragility: ELEVATED · 3 flags</span>
+        <div class="score-card fu fd2">
+          <div class="score-hdr">
+            <span class="score-hdr-title">Session WG-007 · OCC Team Alpha · After Action Review</span>
+            <span class="score-hdr-num">7.4</span>
+          </div>
+          <div class="score-dims">
+            <div class="score-dim">
+              <div class="score-dim-name">Decision Speed</div>
+              <div class="score-track"><div class="score-fill" style="width:78%"></div></div>
+              <div class="score-val">7.8</div>
             </div>
-            <div class="dbody">
-              <div class="dr al"><div class="ds r"></div><div class="dfl">BA2201</div><div class="ddt">+47 min · 82 connections at risk · Cut-off in 38 min</div><div class="dbg r">Cascade</div></div>
-              <div class="dr wn"><div class="ds a"></div><div class="dfl">BA4412</div><div class="ddt">Crew FTL limit · 2 standby available · 90 min window</div><div class="dbg a">FTL Watch</div></div>
-              <div class="dr wn"><div class="ds a"></div><div class="dfl">BA0871</div><div class="ddt">CTOT closing · Slot held 22 min · Handler SLA risk</div><div class="dbg a">Slot</div></div>
-              <div class="dr"><div class="ds g"></div><div class="dfl">BA1103</div><div class="ddt">On time · 12 connections protected · No flags</div><div class="dbg b">Nominal</div></div>
+            <div class="score-dim">
+              <div class="score-dim-name">Cascade Awareness</div>
+              <div class="score-track"><div class="score-fill" style="width:62%"></div></div>
+              <div class="score-val">6.2</div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
- 
-  <div class="sec">
-    <div class="w">
-      <div class="ey"><div class="tk tki"></div><span class="i">Platform features</span></div>
-      <h2 class="sh2" style="margin-bottom:36px">What Intelligence gives you.</h2>
-      <div class="four">
-        <div class="fc">
-          <div class="fnum i">01</div>
-          <div class="ftit">Connection Risk Scoring</div>
-          <p class="fdsc">Every inbound flight is scored against its connection cluster in real time. Misconnect probability, passenger volume at risk, and rebooking options are surfaced before the aircraft lands — not after.</p>
-          <div class="fsigs">
-            <div class="fsig i">Live misconnect probability per flight</div>
-            <div class="fsig i">Connection cluster passenger count</div>
-            <div class="fsig i">Downstream rebooking capacity flagged</div>
-          </div>
-        </div>
-        <div class="fc">
-          <div class="fnum i">02</div>
-          <div class="ftit">Network Fragility Mapping</div>
-          <p class="fdsc">Shepherd scores the structural fragility of your network at any given moment — identifying which routes, crew pools, and aircraft are operating closest to their limits before a trigger event hits.</p>
-          <div class="fsigs">
-            <div class="fsig i">Crew FTL proximity indicators</div>
-            <div class="fsig i">Thin-route single-point-of-failure flags</div>
-            <div class="fsig i">Slot window pressure scoring</div>
-          </div>
-        </div>
-        <div class="fc">
-          <div class="fnum i">03</div>
-          <div class="ftit">Cascade Flag & Impact Mapping</div>
-          <p class="fdsc">When a delay or cancellation occurs, Shepherd immediately maps its full downstream cascade — flagging affected connections, welfare obligations, and crew constraint knock-ons across the entire day's operation.</p>
-          <div class="fsigs">
-            <div class="fsig i">Automated cascade chain mapping</div>
-            <div class="fsig i">EU261 / FTL exposure flagged instantly</div>
-            <div class="fsig i">Priority action sequencing surfaced</div>
-          </div>
-        </div>
-        <div class="fc">
-          <div class="fnum i">04</div>
-          <div class="ftit">Real-Time Disruption Dashboard</div>
-          <p class="fdsc">A single operational picture across your network — live flight status, fragility scores, active cascade flags, and passenger impact metrics consolidated in one place for every team that needs visibility.</p>
-          <div class="fsigs">
-            <div class="fsig i">Cross-network live status view</div>
-            <div class="fsig i">Role-based visibility layers</div>
-            <div class="fsig i">Configurable alert thresholds</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
- 
-  <div class="sec">
-    <div class="w">
-      <div class="two">
-        <div>
-          <div class="ey"><div class="tk tki"></div><span class="i">Who it's for</span></div>
-          <h2 class="sh2">Every team that needs<br/><em class="i">situational awareness.</em></h2>
-          <p class="sb" style="margin-bottom:24px">The intelligence layer is built for anyone in your organisation who needs to see what's happening — and what's about to happen — across the network in real time.</p>
-          <div class="aud"><div class="aud-t">Operations & Network Teams</div><div class="aud-b">Live cascade visibility and connection risk scoring to support real-time decisions on delay and cancellation events.</div></div>
-          <div class="aud"><div class="aud-t">Ground & Airport Teams</div><div class="aud-b">Welfare obligation flags and passenger impact data to support ground-side recovery execution.</div></div>
-          <div class="aud"><div class="aud-t">Customer Experience Teams</div><div class="aud-b">Passenger-level disruption data and compensation exposure flags to support proactive customer communication.</div></div>
-          <div class="aud"><div class="aud-t">Senior Leadership</div><div class="aud-b">Network-wide fragility picture and cascade risk scoring for strategic oversight during major disruption events.</div></div>
-        </div>
-        <div>
-          <div class="ey"><div class="tk tki"></div><span class="i">Credentials</span></div>
-          <h2 class="sh2">Built from inside<br/><em class="i">the problem.</em></h2>
-          <div class="cred"><div class="cion">✈</div><div><div class="ctit">Operational Origin</div><p class="cbod">Founded by a former British Airways Customer Experience Expert who owned the Heathrow disruption management product — and was in the room when it actually happened during the May 2017 global IT outage. This is not an academic product.</p></div></div>
-          <div class="cred"><div class="cion">◈</div><div><div class="ctit">Industry Validation</div><p class="cbod">The founding team's predecessor disruption intelligence project was selected for the IATA accelerate@iata programme — a competitive cohort of the highest-potential aviation startups globally.</p></div></div>
-          <div class="cred"><div class="cion">⬡</div><div><div class="ctit">Category Signal</div><p class="cbod">Navi AI's recent $6.7M raise confirmed investor confidence in AI-powered ops tools. Shepherd owns the decision-making layer.</p></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
- 
-  <div class="sec-last">
-    <div class="w">
-      <div class="cta-block">
-        <div class="ey" style="justify-content:center"><div class="tk tki"></div><span class="i">Get started</span></div>
-        <h2 class="sh2">See your network clearly.<br/><em class="i">Before passengers do.</em></h2>
-        <p class="sb">Request a briefing to discuss your operations context and how the Shepherd intelligence layer maps to it.</p>
-        <div class="btns">
-          <a href="/cdn-cgi/l/email-protection#aac2cfc6c6c5ead9c2cfdac2d884c3c5" class="bp">Request a Briefing</a>
-          <button class="bg2" onclick="switchTab('s')">Explore War Games</button>
-        </div>
-        <p class="cta-fine">No sales process. Direct conversation with the founding team — <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a5cdc0c9c9cae5d6cdc0d5cdd78bccca">[email&#160;protected]</a></p>
-      </div>
-    </div>
-  </div>
- 
-</div>
- 
-<!-- WAR GAMES PANEL -->
-<div id="panel-s" class="panel">
- 
-  <div class="sec">
-    <div class="w">
-      <div class="two">
-        <div>
-          <div class="pill s"><div class="pdot"></div>Pillar Two</div>
-          <div class="ey"><div class="tk tks"></div><span class="s">War Games & Simulation</span></div>
-          <h2 class="sh2">Train the decisions<br/><em class="s">that matter most.</em></h2>
-          <p class="sb">Seeing the cascade is only half the problem. Teams need the practised decision instincts to act on it — fast, correctly, under pressure. Shepherd's simulation layer builds that muscle memory through scored, repeatable exercises with automated after-action review.</p>
-          <div style="margin-top:28px">
-            <div class="bar-hl">
-              <div class="bar-line"></div>
-              <div class="bar-content">
-                <div class="bar-title">The Problem It Solves</div>
-                <div class="bar-body">Pilots train in simulators. Military commanders run war games. Aviation operations teams — who make decisions with identical stakes — have no equivalent training standard. Shepherd changes that.</div>
-              </div>
+            <div class="score-dim">
+              <div class="score-dim-name">Priority Ordering</div>
+              <div class="score-track"><div class="score-fill" style="width:80%"></div></div>
+              <div class="score-val">8.0</div>
+            </div>
+            <div class="score-dim">
+              <div class="score-dim-name">Passenger Outcome</div>
+              <div class="score-track"><div class="score-fill" style="width:74%"></div></div>
+              <div class="score-val">7.4</div>
+            </div>
+            <div class="score-dim">
+              <div class="score-dim-name">Decision Accuracy</div>
+              <div class="score-track"><div class="score-fill" style="width:88%"></div></div>
+              <div class="score-val">8.8</div>
             </div>
           </div>
-        </div>
-        <div>
-          <div class="ey"><div class="tk tks"></div><span class="s">Live Simulation</span></div>
-          <div class="stabs">
-            <button class="stab on" onclick="setS(0)">Crew Limits</button>
-            <button class="stab" onclick="setS(1)">Connection Cascade</button>
-            <button class="stab" onclick="setS(2)">Runway Closure</button>
-            <button class="stab" onclick="setS(3)">Ground Stop</button>
+          <div class="score-insight">
+            <div class="score-insight-lbl">Pattern Identified</div>
+            <div class="score-insight-txt">Cascade awareness score 18% below benchmark. Pattern: consistently under-protected connection clusters when origin disruption is crew-based. Recommended focus: crew-cascade scenario block — next session.</div>
           </div>
-          <div class="sdisp">
-            <div class="shbar"><div class="dot3 r"></div><div class="dot3 y"></div><div class="dot3 g"></div><span class="stbar" id="stbar">SESSION-WG-003 / CREW-LIMITS / TRIAGE</span></div>
-            <div class="sbod">
-              <div class="sinj">
-                <div class="silb" id="slbl">⚡ Inject — T+14 min</div>
-                <p class="sitx" id="stxt">Delay cascade has pushed 4 crews into their final 2 hours simultaneously. Standby pool: 2 crews. Must select 2 of 4 FTL-affected flights. BA721 (82 connections, 4h20), BA722 (12 connections, 1h45), BA723 (45 connections, crew at dest), BA724 (last service, 180 pax).</p>
-              </div>
-              <div class="sopts" id="sopts">
-                <div class="opt op"><span class="ok">A</span><span class="ot">Allocate to BA721 (highest connection risk) and BA724 (no alternative). Cancel BA722 and BA723.</span><span class="obg">Optimal</span></div>
-                <div class="opt"><span class="ok">B</span><span class="ot">Allocate to longest-haul BA721 and BA723 by flight time.</span></div>
-                <div class="opt"><span class="ok">C</span><span class="ot">Allocate to easiest-to-operate flights to maximise success probability.</span></div>
-              </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- LIVE INTEL -->
+<section id="intel">
+  <div class="wrap section-pad">
+    <div class="intel-layout">
+      <div class="fu">
+        <div class="intel-dashboard">
+          <div class="intel-bar">
+            <span class="intel-bar-l">SHEPHERD / LIVE INTELLIGENCE · 14:32 UTC</span>
+            <span class="intel-bar-r">Fragility: ELEVATED · 3 flags</span>
+          </div>
+          <div class="intel-rows">
+            <div class="intel-row alert">
+              <div class="intel-flight">BA2201</div>
+              <div class="intel-info">+47 min delay · 82 connections at risk · Cut-off in 38 min · Cascade: BA4412, BA0871</div>
+              <div class="intel-tag r">Cascade</div>
+            </div>
+            <div class="intel-row warn">
+              <div class="intel-flight">BA4412</div>
+              <div class="intel-info">Crew FTL limit — 2 standby available · 90 min window · EU261 flag</div>
+              <div class="intel-tag a">FTL Watch</div>
+            </div>
+            <div class="intel-row warn">
+              <div class="intel-flight">BA0871</div>
+              <div class="intel-info">CTOT closing · Slot held 22 min · T-656/24 — voluntary hold flag</div>
+              <div class="intel-tag a">Legal Flag</div>
+            </div>
+            <div class="intel-row ok">
+              <div class="intel-flight">BA1103</div>
+              <div class="intel-info">On time · 12 connections protected · No flags</div>
+              <div class="intel-tag g">Nominal</div>
+            </div>
+          </div>
+          <div class="intel-copilot">
+            <div class="intel-copilot-lbl">Decision Intelligence Copilot · Ranked Recovery Options</div>
+            <div class="intel-copilot-rec">
+              <strong>Option 1 (Recommended):</strong> Cancel BA2201. Est. total cost £47K. EU261 exposure: £18K. Protects 34 onward connections. Crew repositioned for BA4412 — FTL resolved.<br/><br/>
+              <strong>Option 2:</strong> Hold BA2201 40 min. Est. total cost £61K. Caution: T-656/24 exposure — voluntary hold may void extraordinary circumstances defence.
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
- 
-  <div class="sec">
-    <div class="w">
-      <div class="ey"><div class="tk tks"></div><span class="s">Platform features</span></div>
-      <h2 class="sh2" style="margin-bottom:36px">What War Games gives you.</h2>
-      <div class="six">
-        <div class="fc">
-          <div class="fnum s">01</div>
-          <div class="ftit">Scenario Engine</div>
-          <p class="fdsc">Branching disruption scenarios across crew, connection, runway, weather, and systems events. Built from real industry event patterns. New scenarios authored by your own teams in minutes.</p>
-          <div class="fsigs">
-            <div class="fsig s">Crew, slot, connection, weather, runway types</div>
-            <div class="fsig s">Configurable cascade branching</div>
-            <div class="fsig s">Replayable and editable scenario library</div>
+      <div>
+        <div class="eyebrow fu">Live Intelligence</div>
+        <h2 class="fu fd1">The full picture,<br/><em>before the window closes.</em></h2>
+        <p class="lead fu fd2" style="margin-bottom:32px">The Decision Intelligence Copilot doesn't replace the controller's decision. It ensures the decision is made with complete information — cascade impact, cost exposure, legal liability, and codeshare passenger visibility — before the window closes, not after the cascade has started.</p>
+        <div class="fu fd3" style="display:flex;flex-direction:column;gap:16px">
+          <div style="padding:16px 20px;border:1px solid var(--b1);border-radius:3px;background:var(--s1)">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Codeshare Visibility</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6">Passengers on partner-operated metal — invisible in standard operational feeds — are surfaced explicitly with their connection risk and reaccommodation options modelled alongside mainline inventory.</div>
           </div>
-        </div>
-        <div class="fc">
-          <div class="fnum s">02</div>
-          <div class="ftit">Live Facilitator Control</div>
-          <p class="fdsc">Real-time session runner for facilitators. Inject events mid-session, pause for debrief, and monitor every participant's decision path simultaneously. War room and individual views available.</p>
-          <div class="fsigs">
-            <div class="fsig s">Live event injection mid-session</div>
-            <div class="fsig s">Per-participant decision tracking</div>
-            <div class="fsig s">War room and individual views</div>
-          </div>
-        </div>
-        <div class="fc">
-          <div class="fnum s">03</div>
-          <div class="ftit">Automated Scoring</div>
-          <p class="fdsc">System-derived scoring across five dimensions — cascade awareness, priority accuracy, regulatory compliance, resource efficiency, and passenger impact. No self-reporting. No subjectivity.</p>
-          <div class="fsigs">
-            <div class="fsig s">5 scored decision dimensions</div>
-            <div class="fsig s">Configurable dimension weighting</div>
-            <div class="fsig s">Benchmarked against industry norms</div>
-          </div>
-        </div>
-        <div class="fc">
-          <div class="fnum s">04</div>
-          <div class="ftit">After Action Review</div>
-          <p class="fdsc">Every session ends with a detailed automated debrief. Decision patterns identified. Benchmark gaps surfaced. Recommended focus areas for the next session generated automatically.</p>
-          <div class="fsigs">
-            <div class="fsig s">Automated post-session debrief report</div>
-            <div class="fsig s">Decision pattern gap analysis</div>
-            <div class="fsig s">Next-session recommendations</div>
-          </div>
-        </div>
-        <div class="fc">
-          <div class="fnum s">05</div>
-          <div class="ftit">Team Benchmarking</div>
-          <p class="fdsc">Individual and cohort performance tracked across sessions over time. Identify decision gaps by role, shift, and experience level. Progress measurable and reportable to leadership.</p>
-          <div class="fsigs">
-            <div class="fsig s">Cross-session performance tracking</div>
-            <div class="fsig s">Role and shift-level gap analysis</div>
-            <div class="fsig s">Exportable progress reports</div>
-          </div>
-        </div>
-        <div class="fc">
-          <div class="fnum s">06</div>
-          <div class="ftit">Executive War Games</div>
-          <p class="fdsc">Strategic-level exercises for directors and senior leadership. Network-wide scenario planning. Stress-test recovery frameworks and crisis governance before the next major event.</p>
-          <div class="fsigs">
-            <div class="fsig s">C-suite and director-level facilitation</div>
-            <div class="fsig s">Network-wide strategic scenarios</div>
-            <div class="fsig s">Benchmarked against McKinsey/BCG war games</div>
+          <div style="padding:16px 20px;border:1px solid var(--b1);border-radius:3px;background:var(--s1)">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">T-656/24 Compliance</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6">Under T-656/24, voluntarily holding a flight can become the determining cause of the delay — voiding the EU261 defence on that rotation and downline. Shepherd flags this before the decision is made.</div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</section>
  
-  <div class="sec">
-    <div class="w">
-      <div class="two">
-        <div>
-          <div class="ey"><div class="tk tks"></div><span class="s">After Action Review</span></div>
-          <h2 class="sh2">Decisions scored.<br/><em class="s">Patterns revealed.</em></h2>
-          <p class="sb">Scoring is system-derived — not self-reported. Scenario options are pre-tagged with cascade and priority metadata, producing consistent, deterministic assessment across every participant and session.</p>
-          <div class="iblock">
-            <div class="ilbl">Insight — Session WG-003</div>
-            <p class="itxt">Cascade awareness score (6.2/10) was 18% below benchmark. Pattern: consistently under-protected connection clusters when the primary disruption was crew-origin. Recommended: crew-cascade scenario block in next session.</p>
+<!-- SCORING DIMENSIONS -->
+<section id="scoring">
+  <div class="wrap section-pad">
+    <div class="scoring-intro">
+      <div>
+        <div class="eyebrow fu">Decision Scoring</div>
+        <h2 class="fu fd1">Five dimensions.<br/><em>No self-reporting.</em></h2>
+      </div>
+      <p class="lead fu fd1">Scoring is system-derived from pre-tagged scenario options. Deterministic, consistent, and benchmarked against industry norms — not against a facilitator's subjective assessment. Every session produces the same quality of evidence regardless of who runs it.</p>
+    </div>
+    <div class="dims-grid">
+      <div class="dim-card fu">
+        <div class="dim-n">Dimension 01</div>
+        <div class="dim-name">Decision Speed</div>
+        <div class="dim-desc">Time from scenario trigger to first priority decision. Benchmarked against industry practitioner norms. Tracks improvement across session arc.</div>
+        <div class="dim-weight">Weight: 20%</div>
+      </div>
+      <div class="dim-card fu fd1">
+        <div class="dim-n">Dimension 02</div>
+        <div class="dim-name">Decision Accuracy</div>
+        <div class="dim-desc">Whether the decision selected matches the optimal tagged response for the constraint set presented. Adjusted for partial credit on near-optimal choices.</div>
+        <div class="dim-weight">Weight: 25%</div>
+      </div>
+      <div class="dim-card fu fd2">
+        <div class="dim-n">Dimension 03</div>
+        <div class="dim-name">Cascade Awareness</div>
+        <div class="dim-desc">Whether second and third-order effects were anticipated before they materialised. The most differentiating dimension between junior and senior controllers.</div>
+        <div class="dim-weight">Weight: 25%</div>
+      </div>
+      <div class="dim-card fu fd3">
+        <div class="dim-n">Dimension 04</div>
+        <div class="dim-name">Priority Ordering</div>
+        <div class="dim-desc">Whether constraints were sequenced correctly under time pressure — closing windows before open ones, by passenger impact, by regulatory exposure.</div>
+        <div class="dim-weight">Weight: 15%</div>
+      </div>
+      <div class="dim-card fu fd4">
+        <div class="dim-n">Dimension 05</div>
+        <div class="dim-name">Passenger Outcome</div>
+        <div class="dim-desc">Total disrupted passengers, misconnects, welfare provision triggered, and EU261/UK261 liability generated. The commercial consequence of the decision chain.</div>
+        <div class="dim-weight">Weight: 15%</div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- IOSA -->
+<section id="iosa">
+  <div class="wrap section-pad">
+    <div class="iosa-layout">
+      <div>
+        <div class="eyebrow fu">Regulatory Compliance</div>
+        <h2 class="fu fd1">IOSA audit evidence.<br/><em>Automatic.</em></h2>
+        <p class="lead fu fd2" style="margin-bottom:32px">Shepherd satisfies all eight IOSA DSP training evidence requirements in a single platform. Every session generates structured evidence automatically — no parallel documentation system required. The 450 airlines on a two-year IOSA renewal cycle are entering audit preparation continuously.</p>
+        <div class="iosa-callout fu fd3">
+          <div class="iosa-callout-lbl">The market entry signal</div>
+          <div class="iosa-callout-text">Airlines entering IOSA audit preparation have a procurement trigger, a compliance deadline, and a quantifiable cost of non-compliance. Shepherd enters as a compliance solution and stays as a performance platform.</div>
+        </div>
+      </div>
+      <div class="iosa-reqs fu fd1">
+        <div class="iosa-req">
+          <div class="iosa-check">✓</div>
+          <div>
+            <div class="iosa-req-title">DSP 1.1 — Operations Training Programme</div>
+            <div class="iosa-req-sub">Structured training with measurable competency outcomes</div>
           </div>
         </div>
-        <div class="sc">
-          <div class="sch"><span class="sct">Session WG-003 · Operations Team Alpha</span><span class="sco">7.4 / 10</span></div>
-          <div class="sdim"><div class="dn">Cascade Awareness</div><div class="dbt"><div class="dbf" style="width:62%"></div></div><div class="dsc">6.2</div></div>
-          <div class="sdim"><div class="dn">Priority Accuracy</div><div class="dbt"><div class="dbf" style="width:80%"></div></div><div class="dsc">8.0</div></div>
-          <div class="sdim"><div class="dn">Regulatory Compliance</div><div class="dbt"><div class="dbf" style="width:90%"></div></div><div class="dsc">9.0</div></div>
-          <div class="sdim"><div class="dn">Resource Efficiency</div><div class="dbt"><div class="dbf" style="width:74%"></div></div><div class="dsc">7.4</div></div>
-          <div class="sdim"><div class="dn">Passenger Impact</div><div class="dbt"><div class="dbf" style="width:68%"></div></div><div class="dsc">6.8</div></div>
+        <div class="iosa-req">
+          <div class="iosa-check">✓</div>
+          <div>
+            <div class="iosa-req-title">DSP 1.2 — IROPS Scenario Training</div>
+            <div class="iosa-req-sub">Scenario-based exercises covering irregular operations</div>
+          </div>
+        </div>
+        <div class="iosa-req">
+          <div class="iosa-check">✓</div>
+          <div>
+            <div class="iosa-req-title">DSP 1.3 — Performance Assessment</div>
+            <div class="iosa-req-sub">Documented individual and team performance records</div>
+          </div>
+        </div>
+        <div class="iosa-req">
+          <div class="iosa-check">✓</div>
+          <div>
+            <div class="iosa-req-title">DSP 1.4 — Decision Quality Measurement</div>
+            <div class="iosa-req-sub">Systematic scoring of decision quality against benchmarks</div>
+          </div>
+        </div>
+        <div class="iosa-req">
+          <div class="iosa-check">✓</div>
+          <div>
+            <div class="iosa-req-title">DSP 2.1 — After Action Review</div>
+            <div class="iosa-req-sub">Structured post-event debrief with documented findings</div>
+          </div>
+        </div>
+        <div class="iosa-req">
+          <div class="iosa-check">✓</div>
+          <div>
+            <div class="iosa-req-title">DSP 2.2 — Recurrent Training Evidence</div>
+            <div class="iosa-req-sub">Session logs and progression records across time</div>
+          </div>
+        </div>
+        <div class="iosa-req">
+          <div class="iosa-check">✓</div>
+          <div>
+            <div class="iosa-req-title">DSP 3.1 — Competency Benchmarking</div>
+            <div class="iosa-req-sub">Individual scores benchmarked against cohort and industry norms</div>
+          </div>
+        </div>
+        <div class="iosa-req">
+          <div class="iosa-check">✓</div>
+          <div>
+            <div class="iosa-req-title">DSP 3.2 — Regulatory Awareness Training</div>
+            <div class="iosa-req-sub">EU261/UK261 and FTL compliance scenarios with scored outcomes</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+</section>
  
-  <div class="sec-last">
-    <div class="w">
-      <div class="cta-block">
-        <div class="ey" style="justify-content:center"><div class="tk tks"></div><span class="s">Get started</span></div>
-        <h2 class="sh2">Build the muscle memory<br/><em class="s">before the next event.</em></h2>
-        <p class="sb">We work with a focused set of airline partners. Request a briefing to discuss your operations context and how Shepherd War Games maps to it.</p>
-        <div class="btns">
-          <a href="/cdn-cgi/l/email-protection#a4ccc1c8c8cbe4d7ccc1d4ccd68acdcb" class="bp">Request a Briefing</a>
-          <button class="bg2" onclick="switchTab('i')">Explore Intelligence</button>
-        </div>
-        <p class="cta-fine">No sales process. Direct conversation with the founding team — <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d1b9b4bdbdbe91a2b9b4a1b9a3ffb8be">[email&#160;protected]</a></p>
+<!-- FLYWHEEL -->
+<section id="flywheel">
+  <div class="wrap section-pad">
+    <div class="flywheel-intro">
+      <div class="eyebrow fu">The Data Flywheel</div>
+      <h2 class="fu fd1">Every session makes the<br/><em>next one more valuable.</em></h2>
+      <p class="lead fu fd2">Unlike point solutions, Shepherd compounds. Historical events seed scenarios. Scenarios produce decisions. Decisions produce norming data. Norming data improves assessment accuracy. Assessment accuracy attracts more sessions.</p>
+    </div>
+    <div class="fw-steps">
+      <div class="fw-step fu">
+        <div class="fw-icon">①</div>
+        <div class="fw-label">Event Data</div>
+        <div class="fw-text">Real disruption events seed the scenario library automatically</div>
+      </div>
+      <div class="fw-step fu fd1">
+        <div class="fw-icon">②</div>
+        <div class="fw-label">Simulation</div>
+        <div class="fw-text">Teams train on real event patterns under scored conditions</div>
+      </div>
+      <div class="fw-step fu fd2">
+        <div class="fw-icon">③</div>
+        <div class="fw-label">Decision Data</div>
+        <div class="fw-text">Every decision captured — what was chosen, what was optimal</div>
+      </div>
+      <div class="fw-step fu fd3">
+        <div class="fw-icon">④</div>
+        <div class="fw-label">Benchmarks</div>
+        <div class="fw-text">Norming cohort builds industry-wide decision quality benchmarks</div>
+      </div>
+      <div class="fw-step fu fd4">
+        <div class="fw-icon">⑤</div>
+        <div class="fw-label">Screening</div>
+        <div class="fw-text">Benchmarks power hiring assessment accuracy — second revenue stream</div>
       </div>
     </div>
   </div>
+</section>
  
-</div>
+<!-- CREDENTIALS -->
+<section id="creds">
+  <div class="wrap section-pad" style="padding-bottom:0">
+    <div class="eyebrow fu" style="margin-bottom:48px">Credentials</div>
+  </div>
+  <div class="creds-grid">
+    <div class="cred-card fu">
+      <div class="cred-over">Operational Origin</div>
+      <div class="cred-title">Built from inside a BA disruption operations role</div>
+      <div class="cred-rule"></div>
+      <div class="cred-body">
+        <p>Shepherd was founded by a former British Airways disruption product owner — responsible for the tools, processes, and decisions governing how thousands of disrupted passengers were managed at Heathrow every day.</p>
+        <p>The May 2017 BA global IT outage — one of the most significant operational events in the airline's history — is where the decision gap became undeniable. <strong>Shepherd was conceived inside the disruption events it is designed to prevent.</strong></p>
+      </div>
+    </div>
+    <div class="cred-card fu fd1">
+      <div class="cred-over">Industry Validation</div>
+      <div class="cred-title">Predecessor project selected for IATA accelerate@iata</div>
+      <div class="cred-rule"></div>
+      <div class="cred-body">
+        <p>The founding team's predecessor disruption intelligence project was selected for the IATA accelerate@iata programme — a competitive cohort of the highest-potential aviation startups globally. Founder-level validation of the problem space.</p>
+        <p><strong>Category signal:</strong> Navi AI's $6.7M raise from United Airlines Ventures confirmed investor conviction in AI-powered operations intelligence. Navi operates at the pilot skills layer. <strong>Shepherd owns the operations decision layer Navi doesn't touch.</strong></p>
+      </div>
+    </div>
+  </div>
+  <div style="height:120px"></div>
+</section>
  
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-glow"></div>
+  <div class="wrap">
+    <div class="cta-inner">
+      <div class="eyebrow fu" style="justify-content:center">Get Started</div>
+      <h2 class="fu fd1">The readiness gap<br/><em>is the opportunity.</em></h2>
+      <p class="cta-sub fu fd2">Request a briefing. We'll walk you through the platform, run a sample scenario with your team, and map Shepherd against your specific IOSA audit cycle and disruption profile.</p>
+      <div class="cta-actions fu fd3">
+        <a href="mailto:hello@shephr.io" class="btn-primary">Request a Briefing</a>
+        <a href="mailto:hello@shephr.io" class="btn-ghost">hello@shephr.io</a>
+      </div>
+      <div class="cta-fine fu fd4">Shepherd · shephr.io · hello@shephr.io · Disruption Intelligence for Aviation</div>
+    </div>
+  </div>
+</section>
+ 
+<!-- FOOTER -->
 <footer>
-  <div class="w">
-    <div class="ftri">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div class="nd" style="width:6px;height:6px"></div>
-        <span class="fcp" style="color:var(--mu);margin-left:4px">SHEPHERD</span>
-        <span class="fcp" style="margin-left:14px">© 2026 Shepherd. Disruption Intelligence for Aviation.</span>
+  <div class="wrap">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="nav-dot" style="width:6px;height:6px"></div>
+        <span class="footer-copy">Shepherd · © 2026</span>
       </div>
-      <ul class="fls">
-        <li><a href="/cdn-cgi/l/email-protection#fe969b929291be8d969b8e968cd09791">Contact</a></li>
-        <li><a href="#">Privacy</a></li>
+      <ul class="footer-links">
+        <li><a href="#modes">Platform</a></li>
+        <li><a href="#iosa">IOSA</a></li>
+        <li><a href="mailto:hello@shephr.io">Contact</a></li>
+        <li><a href="https://shephr.io">shephr.io</a></li>
       </ul>
     </div>
   </div>
 </footer>
  
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  var SC=[
-    {t:'SESSION-WG-003 / CREW-LIMITS / TRIAGE',l:'⚡ Inject — T+14 min',x:'Delay cascade has pushed 4 crews into their final 2 hours simultaneously. Standby pool: 2 crews. Must select 2 of 4 FTL-affected flights. BA721 (82 connections, 4h20), BA722 (12 connections, 1h45), BA723 (45 connections, crew at dest), BA724 (last service, 180 pax).',o:[{k:'A',t:'Allocate to BA721 (highest connection risk) and BA724 (no alternative). Cancel BA722 and BA723.',op:true},{k:'B',t:'Allocate to longest-haul BA721 and BA723 by flight time.',op:false},{k:'C',t:'Allocate to easiest-to-operate flights to maximise success probability.',op:false}]},
-    {t:'SESSION-WG-003 / CONNECTION-CASCADE / RECOGNITION',l:'⚡ Inject — T+08 min',x:'Inbound BA2201 tracking 47 min late. 82 passengers have connections in next 90 min. 14 on 3 long-haul services with hard cut-off times. Turnaround: 35 min minimum.',o:[{k:'A',t:'Protect 14 long-haul connections immediately. Fast-track BA2201 turnaround. Brief customer teams on 68 short-haul impacts.',op:true},{k:'B',t:'Wait for confirmed arrival time before making connection protection decisions.',op:false},{k:'C',t:'Protect all 82 connections equally. Hold all 3 long-haul services.',op:false}]},
-    {t:'SESSION-WG-003 / RUNWAY-CLOSURE / TRIAGE',l:'⚡ Inject — T+03 min',x:'Vehicle incursion on primary runway. Closed. 3 aircraft on final approach (8nm, 12nm, 19nm). Closure: 30 min to 4 hours. 8 aircraft in holding stack, varying fuel states.',o:[{k:'A',t:'Go-around all 3 final approach aircraft. Coordinate divert routing. Notify destination welfare teams.',op:true},{k:'B',t:'Go-around 8nm aircraft only. Others hold pending clearance timeline.',op:false},{k:'C',t:'ATC responsibility — monitor and stand by for ATC instruction.',op:false}]},
-    {t:'SESSION-WG-003 / GROUND-STOP / RECOVERY',l:'⚡ Inject — T+32 min',x:'ATFM ground stop lifted. 6 aircraft held 2h20. Crew rest compromised on 2 services. 340 passengers need rebooking or welfare. 4 departure slots available next 90 min.',o:[{k:'A',t:'Prioritise by passenger impact: highest connection density first. Fresh crew for 2 services. Welfare protocol for 340 passengers.',op:true},{k:'B',t:'Operate in original sequence to minimise crew plan disruption.',op:false},{k:'C',t:'Operate 4 shortest sectors first to clear stand queue.',op:false}]}
-  ];
+<script>
+  // Intersection observer for fade-up animations
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis'); });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
  
-  function setS(i){
-    document.querySelectorAll('.stab').forEach(function(t,j){t.classList.toggle('on',i===j);});
-    var s=SC[i];
-    document.getElementById('stbar').textContent=s.t;
-    document.getElementById('slbl').textContent=s.l;
-    document.getElementById('stxt').textContent=s.x;
-    document.getElementById('sopts').innerHTML=s.o.map(function(o){return '<div class="opt'+(o.op?' op':'')+'"><span class="ok">'+o.k+'</span><span class="ot">'+o.t+'</span>'+(o.op?'<span class="obg">Optimal</span>':'')+'</div>';}).join('');
-  }
+  document.querySelectorAll('.fu').forEach(el => obs.observe(el));
  
-  function switchTab(t){
-    document.getElementById('panel-i').classList.toggle('on',t==='i');
-    document.getElementById('panel-s').classList.toggle('on',t==='s');
-    document.querySelectorAll('.nt').forEach(function(n){
-      n.classList.remove('ai','as');
-      var txt=n.textContent.trim().toLowerCase();
-      if(txt.indexOf('intel')>-1&&t==='i')n.classList.add('ai');
-      if(txt.indexOf('war')>-1&&t==='s')n.classList.add('as');
+  // Animate score bars on entry
+  const barObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        e.target.querySelectorAll('.score-fill').forEach(bar => {
+          const w = bar.style.width;
+          bar.style.width = '0';
+          setTimeout(() => bar.style.width = w, 200);
+        });
+      }
     });
-    document.querySelectorAll('.htab').forEach(function(n){
-      n.classList.remove('on');
-      if(n.classList.contains('ti')&&t==='i')n.classList.add('on');
-      if(n.classList.contains('ts')&&t==='s')n.classList.add('on');
-    });
-    setTimeout(function(){
-      var first=document.querySelector('#panel-'+t+'.on .sec');
-      if(first)first.scrollIntoView({behavior:'smooth',block:'start'});
-    },50);
-  }
-</script><script>
-  const SC=[
-    {t:'SESSION-WG-003 / CREW-LIMITS / TRIAGE',l:'⚡ Inject — T+14 min',x:'Delay cascade has pushed 4 crews into their final 2 hours simultaneously. Standby pool: 2 crews. Must select 2 of 4 FTL-affected flights. BA721 (82 connections, 4h20), BA722 (12 connections, 1h45), BA723 (45 connections, crew at dest), BA724 (last service, 180 pax).',o:[{k:'A',t:'Allocate to BA721 (highest connection risk) and BA724 (no alternative). Cancel BA722 and BA723.',op:true},{k:'B',t:'Allocate to longest-haul BA721 and BA723 by flight time.',op:false},{k:'C',t:'Allocate to easiest-to-operate flights to maximise success probability.',op:false}]},
-    {t:'SESSION-WG-003 / CONNECTION-CASCADE / RECOGNITION',l:'⚡ Inject — T+08 min',x:'Inbound BA2201 tracking 47 min late. 82 passengers have connections in next 90 min. 14 on 3 long-haul services with hard cut-off times. Turnaround: 35 min minimum.',o:[{k:'A',t:'Protect 14 long-haul connections immediately. Fast-track BA2201 turnaround. Brief customer teams on 68 short-haul impacts.',op:true},{k:'B',t:'Wait for confirmed arrival time before making connection protection decisions.',op:false},{k:'C',t:'Protect all 82 connections equally. Hold all 3 long-haul services.',op:false}]},
-    {t:'SESSION-WG-003 / RUNWAY-CLOSURE / TRIAGE',l:'⚡ Inject — T+03 min',x:'Vehicle incursion on primary runway. Closed. 3 aircraft on final approach (8nm, 12nm, 19nm). Closure: 30 min to 4 hours. 8 aircraft in holding stack, varying fuel states.',o:[{k:'A',t:'Go-around all 3 final approach aircraft. Coordinate divert routing. Notify destination welfare teams.',op:true},{k:'B',t:'Go-around 8nm aircraft only. Others hold pending clearance timeline.',op:false},{k:'C',t:'ATC responsibility — monitor and stand by for ATC instruction.',op:false}]},
-    {t:'SESSION-WG-003 / GROUND-STOP / RECOVERY',l:'⚡ Inject — T+32 min',x:'ATFM ground stop lifted. 6 aircraft held 2h20. Crew rest compromised on 2 services. 340 passengers need rebooking or welfare. 4 departure slots available next 90 min.',o:[{k:'A',t:'Prioritise by passenger impact: highest connection density first. Fresh crew for 2 services. Welfare protocol for 340 passengers.',op:true},{k:'B',t:'Operate in original sequence to minimise crew plan disruption.',op:false},{k:'C',t:'Operate 4 shortest sectors first to clear stand queue.',op:false}]}
-  ];
+  }, { threshold: 0.3 });
  
-  function setS(i){
-    document.querySelectorAll('.stab').forEach((t,j)=>t.classList.toggle('on',i===j));
-    const s=SC[i];
-    document.getElementById('stbar').textContent=s.t;
-    document.getElementById('slbl').textContent=s.l;
-    document.getElementById('stxt').textContent=s.x;
-    document.getElementById('sopts').innerHTML=s.o.map(o=>`<div class="opt${o.op?' op':''}"><span class="ok">${o.k}</span><span class="ot">${o.t}</span>${o.op?'<span class="obg">Optimal</span>':''}</div>`).join('');
-  }
- 
-  window.switchTab=function(t){
-    document.getElementById('panel-i').classList.toggle('on',t==='i');
-    document.getElementById('panel-s').classList.toggle('on',t==='s');
-    document.querySelectorAll('.nt').forEach(n=>{
-      n.classList.remove('ai','as');
-      const txt=n.textContent.trim().toLowerCase();
-      if(txt.includes('intel')&&t==='i')n.classList.add('ai');
-      if(txt.includes('war')&&t==='s')n.classList.add('as');
-    });
-    document.querySelectorAll('.htab').forEach(n=>{
-      n.classList.remove('on');
-      if(n.classList.contains('ti')&&t==='i')n.classList.add('on');
-      if(n.classList.contains('ts')&&t==='s')n.classList.add('on');
-    });
-    setTimeout(()=>{
-      const first=document.querySelector('#panel-'+t+'.on .sec');
-      if(first)first.scrollIntoView({behavior:'smooth',block:'start'});
-    },50);
-  }'
+  document.querySelectorAll('.score-card').forEach(el => barObs.observe(el));
+</script>
+</body>
+</html>
