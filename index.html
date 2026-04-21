@@ -30,10 +30,10 @@
       --mono:     'DM Mono', monospace;
       --sans:     'Sora', system-ui, sans-serif;
     }
- 
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
- 
+
     body {
       background: var(--bg);
       color: var(--white);
@@ -43,12 +43,12 @@
       line-height: 1.65;
       overflow-x: hidden;
     }
- 
+
     ::selection { background: var(--gold); color: #000; }
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--dim); }
- 
+
     /* NOISE */
     body::before {
       content: '';
@@ -56,11 +56,11 @@
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
       pointer-events: none; z-index: 0; opacity: 0.5;
     }
- 
+
     /* ── LAYOUT ── */
     .wrap { max-width: 1160px; margin: 0 auto; padding: 0 48px; position: relative; z-index: 1; }
     section { position: relative; }
- 
+
     /* ── NAV ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; height: 58px;
@@ -86,7 +86,7 @@
       transition: background .2s !important;
     }
     .nav-cta:hover { background: var(--gold-lt) !important; }
- 
+
     /* ── HERO ── */
     #hero {
       min-height: 100vh;
@@ -115,7 +115,7 @@
       margin-bottom: 32px;
     }
     .hero-kicker::before { content: ''; width: 28px; height: 1px; background: var(--gold); }
- 
+
     h1 {
       font-family: var(--serif); font-weight: 600;
       font-size: clamp(44px, 6vw, 80px);
@@ -123,7 +123,7 @@
       color: #fff; margin-bottom: 28px; max-width: 820px;
     }
     h1 em { font-style: italic; color: var(--gold-lt); }
- 
+
     .hero-sub {
       font-size: 17px; font-weight: 300; color: var(--muted);
       max-width: 560px; line-height: 1.75; margin-bottom: 44px;
@@ -147,7 +147,7 @@
       display: inline-block;
     }
     .btn-ghost:hover { color: var(--white); border-color: var(--dim); }
- 
+
     /* HERO OUTCOME STRIP */
     .outcome-strip {
       display: grid; grid-template-columns: repeat(3, 1fr);
@@ -167,7 +167,7 @@
     }
     .outcome-label { font-size: 13px; color: var(--muted); line-height: 1.5; }
     .outcome-label strong { color: var(--white); font-weight: 400; display: block; margin-bottom: 2px; }
- 
+
     /* ── SECTION COMMON ── */
     .section-pad { padding: 120px 0; }
     .eyebrow {
@@ -186,7 +186,7 @@
       font-size: 16px; color: var(--muted); max-width: 560px;
       line-height: 1.75; font-weight: 300;
     }
- 
+
     /* ── THESIS ── */
     #thesis { background: var(--s1); border-top: 1px solid var(--b1); border-bottom: 1px solid var(--b1); }
     .thesis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
@@ -204,7 +204,7 @@
     .thesis-body p { font-size: 15px; color: var(--muted); line-height: 1.75; margin-bottom: 16px; }
     .thesis-body p:last-child { margin-bottom: 0; }
     .thesis-body strong { color: var(--white); font-weight: 400; }
- 
+
     /* ── HOW IT WORKS (Three modes) ── */
     #modes { }
     .modes-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end; margin-bottom: 72px; }
@@ -243,7 +243,7 @@
       font-size: 13px; color: var(--muted);
     }
     .mode-outcome::before { content: '→'; color: var(--gold); flex-shrink: 0; font-family: var(--mono); }
- 
+
     /* ── SIMULATION DEMO ── */
     #demo { background: var(--s1); border-top: 1px solid var(--b1); border-bottom: 1px solid var(--b1); }
     .demo-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: start; }
@@ -287,7 +287,7 @@
       border: 1px solid rgba(78,203,130,0.2); padding: 2px 7px;
       border-radius: 2px; text-transform: uppercase; margin-left: auto; flex-shrink: 0; align-self: center;
     }
- 
+
     /* SCORE CARD */
     .score-card {
       background: var(--bg); border: 1px solid var(--b2); border-radius: 4px; overflow: hidden;
@@ -313,7 +313,7 @@
     }
     .score-insight-lbl { font-family: var(--mono); font-size: 10px; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
     .score-insight-txt { font-size: 12px; color: var(--muted); line-height: 1.6; }
- 
+
     /* ── LIVE INTEL ── */
     #intel { }
     .intel-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
@@ -354,7 +354,7 @@
     .intel-copilot-lbl { font-family: var(--mono); font-size: 10px; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
     .intel-copilot-rec { font-size: 12px; color: var(--muted); line-height: 1.6; }
     .intel-copilot-rec strong { color: var(--white); }
- 
+
     /* ── SCORING DIMENSIONS ── */
     #scoring { background: var(--s1); border-top: 1px solid var(--b1); border-bottom: 1px solid var(--b1); }
     .scoring-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end; margin-bottom: 64px; }
@@ -375,7 +375,7 @@
       margin-top: 16px; font-family: var(--mono); font-size: 10px;
       color: var(--gold); letter-spacing: 0.1em;
     }
- 
+
     /* ── IOSA ── */
     #iosa { }
     .iosa-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
@@ -405,7 +405,7 @@
       font-family: var(--serif); font-size: 20px; font-weight: 400;
       color: var(--white); line-height: 1.45;
     }
- 
+
     /* ── FLYWHEEL ── */
     #flywheel { background: var(--s1); border-top: 1px solid var(--b1); border-bottom: 1px solid var(--b1); }
     .flywheel-intro { text-align: center; max-width: 600px; margin: 0 auto 72px; }
@@ -431,7 +431,7 @@
     }
     .fw-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
     .fw-text { font-size: 12px; color: var(--muted); line-height: 1.6; }
- 
+
     /* ── CREDENTIALS ── */
     #creds { }
     .creds-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--b1); }
@@ -452,7 +452,7 @@
     .cred-body p { margin-bottom: 12px; }
     .cred-body p:last-child { margin-bottom: 0; }
     .cred-body strong { color: var(--white); font-weight: 400; }
- 
+
     /* ── CTA ── */
     #cta { padding: 140px 0; text-align: center; }
     .cta-glow {
@@ -466,7 +466,7 @@
     .cta-sub { font-size: 16px; color: var(--muted); max-width: 460px; margin: 0 auto 44px; line-height: 1.7; }
     .cta-actions { display: flex; gap: 16px; justify-content: center; }
     .cta-fine { margin-top: 28px; font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: 0.08em; }
- 
+
     /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--b1); padding: 36px 0;
@@ -478,7 +478,7 @@
     .footer-links { display: flex; gap: 28px; list-style: none; }
     .footer-links a { font-family: var(--mono); font-size: 11px; color: var(--dim); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color .2s; }
     .footer-links a:hover { color: var(--muted); }
- 
+
     /* ── ANIMATIONS ── */
     .fu { opacity: 0; transform: translateY(28px); transition: opacity .75s ease, transform .75s ease; }
     .fu.vis { opacity: 1; transform: none; }
@@ -486,7 +486,7 @@
     .fd2 { transition-delay: .2s; }
     .fd3 { transition-delay: .3s; }
     .fd4 { transition-delay: .4s; }
- 
+
     /* ── MOBILE ── */
     @media(max-width: 768px) {
       .wrap { padding: 0 24px; }
@@ -502,7 +502,7 @@
   </style>
 </head>
 <body>
- 
+
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-brand">
@@ -512,12 +512,13 @@
   <ul class="nav-links">
     <li><a href="#modes">Platform</a></li>
     <li><a href="#demo">Simulation</a></li>
+    <li><a href="#intel">Intelligence</a></li>
     <li><a href="#scoring">Scoring</a></li>
     <li><a href="#iosa">IOSA</a></li>
     <li><a href="#cta" class="nav-cta">Request Briefing</a></li>
   </ul>
 </nav>
- 
+
 <!-- HERO -->
 <section id="hero">
   <div class="hero-grid"></div>
@@ -548,7 +549,7 @@
         <div class="outcome-num">+15pts</div>
         <div class="outcome-label">
           <strong>Cascade awareness improvement</strong>
-          Average gain Sessions 1–3 across controller cohorts
+          Average gain Sessions 1–3 across ops team cohorts
         </div>
       </div>
       <div class="outcome-cell">
@@ -561,7 +562,7 @@
     </div>
   </div>
 </section>
- 
+
 <!-- THESIS -->
 <section id="thesis">
   <div class="wrap section-pad">
@@ -574,13 +575,13 @@
       </div>
       <div class="thesis-body fu fd1">
         <p>Every incumbent vendor — Sabre, Amadeus, Lufthansa Systems — is building tools that make operations <strong>faster at optimising</strong> within a disruption. They are not building tools that make operations teams <strong>better at deciding</strong> when those optimisations hit their limits.</p>
-        <p>The pilot simulator analogy is exact: ATC candidates complete mandatory simulation before touching live traffic. Signallers train on simulators before managing train movements. <strong>OCC controllers are the only comparable high-consequence role without mandatory simulation.</strong></p>
+        <p>The pilot simulator analogy is exact: ATC candidates complete mandatory simulation before touching live traffic. Signallers train on simulators before managing train movements. <strong>Ops teams are the only comparable high-consequence role without mandatory simulation.</strong></p>
         <p>Shepherd closes that gap. Not as a training product — as a decision improvement system with three deployment modes and measurable outcomes.</p>
       </div>
     </div>
   </div>
 </section>
- 
+
 <!-- THREE MODES -->
 <section id="modes">
   <div class="wrap section-pad">
@@ -598,7 +599,7 @@
         <div class="mode-num">Mode 01</div>
         <div class="mode-when">Before Disruption</div>
         <div class="mode-title">War Games<br/><em>Simulation</em></div>
-        <p class="mode-desc">Scored, scenario-based exercises that build the decision muscle memory that no optimisation tool can substitute. Controllers train on the exact constraint collisions — crew FTL, slot windows, connection clusters — that matter most when it's real.</p>
+        <p class="mode-desc">Scored, scenario-based exercises that build the decision muscle memory that no optimisation tool can substitute. Ops teams train on the exact constraint collisions — crew FTL, slot windows, connection clusters — that matter most when it's real.</p>
         <div class="mode-outcomes">
           <div class="mode-outcome">5-dimension scored decision tracking</div>
           <div class="mode-outcome">Automated After Action Review</div>
@@ -635,7 +636,7 @@
     </div>
   </div>
 </section>
- 
+
 <!-- SIMULATION DEMO -->
 <section id="demo">
   <div class="wrap section-pad">
@@ -643,7 +644,7 @@
       <div>
         <div class="eyebrow fu">Simulation</div>
         <h2 class="fu fd1">Pressure that performs<br/><em>like the real thing.</em></h2>
-        <p class="lead fu fd2" style="margin-bottom:32px">Every scenario is timed, cascading, and scored. Controllers face the exact constraint collisions that produce bad decisions in live operations — crew FTL, connection clusters, and slot windows simultaneously.</p>
+        <p class="lead fu fd2" style="margin-bottom:32px">Every scenario is timed, cascading, and scored. Ops teams face the exact constraint collisions that produce bad decisions in live operations — crew FTL, connection clusters, and slot windows simultaneously.</p>
         <div class="fu fd3" style="display:flex;flex-direction:column;gap:12px">
           <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--muted)">
             <span style="color:var(--gold);font-family:var(--mono);flex-shrink:0">01</span>
@@ -655,7 +656,7 @@
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--muted)">
             <span style="color:var(--gold);font-family:var(--mono);flex-shrink:0">03</span>
-            <span><strong style="color:var(--white);font-weight:400">War Room View</strong> — Multi-participant sessions with live facilitator control, team benchmarking, and a shared operational picture that mirrors the real OCC environment.</span>
+            <span><strong style="color:var(--white);font-weight:400">War Room View</strong> — Multi-participant sessions with live facilitator control, team benchmarking, and a shared operational picture that mirrors the real ops centre environment.</span>
           </div>
         </div>
       </div>
@@ -689,7 +690,7 @@
         </div>
         <div class="score-card fu fd2">
           <div class="score-hdr">
-            <span class="score-hdr-title">Session WG-007 · OCC Team Alpha · After Action Review</span>
+            <span class="score-hdr-title">Session WG-007 · Ops Team Alpha · After Action Review</span>
             <span class="score-hdr-num">7.4</span>
           </div>
           <div class="score-dims">
@@ -728,7 +729,7 @@
     </div>
   </div>
 </section>
- 
+
 <!-- LIVE INTEL -->
 <section id="intel">
   <div class="wrap section-pad">
@@ -773,7 +774,7 @@
       <div>
         <div class="eyebrow fu">Live Intelligence</div>
         <h2 class="fu fd1">The full picture,<br/><em>before the window closes.</em></h2>
-        <p class="lead fu fd2" style="margin-bottom:32px">The Decision Intelligence Copilot doesn't replace the controller's decision. It ensures the decision is made with complete information — cascade impact, cost exposure, legal liability, and codeshare passenger visibility — before the window closes, not after the cascade has started.</p>
+        <p class="lead fu fd2" style="margin-bottom:32px">The Decision Intelligence Copilot doesn't replace the ops team's decision. It ensures the decision is made with complete information — cascade impact, cost exposure, legal liability, and codeshare passenger visibility — before the window closes, not after the cascade has started.</p>
         <div class="fu fd3" style="display:flex;flex-direction:column;gap:16px">
           <div style="padding:16px 20px;border:1px solid var(--b1);border-radius:3px;background:var(--s1)">
             <div style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Codeshare Visibility</div>
@@ -788,7 +789,7 @@
     </div>
   </div>
 </section>
- 
+
 <!-- SCORING DIMENSIONS -->
 <section id="scoring">
   <div class="wrap section-pad">
@@ -815,7 +816,7 @@
       <div class="dim-card fu fd2">
         <div class="dim-n">Dimension 03</div>
         <div class="dim-name">Cascade Awareness</div>
-        <div class="dim-desc">Whether second and third-order effects were anticipated before they materialised. The most differentiating dimension between junior and senior controllers.</div>
+        <div class="dim-desc">Whether second and third-order effects were anticipated before they materialised. The most differentiating dimension between junior and senior ops personnel.</div>
         <div class="dim-weight">Weight: 25%</div>
       </div>
       <div class="dim-card fu fd3">
@@ -833,7 +834,7 @@
     </div>
   </div>
 </section>
- 
+
 <!-- IOSA -->
 <section id="iosa">
   <div class="wrap section-pad">
@@ -908,7 +909,7 @@
     </div>
   </div>
 </section>
- 
+
 <!-- FLYWHEEL -->
 <section id="flywheel">
   <div class="wrap section-pad">
@@ -946,7 +947,7 @@
     </div>
   </div>
 </section>
- 
+
 <!-- CREDENTIALS -->
 <section id="creds">
   <div class="wrap section-pad" style="padding-bottom:0">
@@ -974,7 +975,7 @@
   </div>
   <div style="height:120px"></div>
 </section>
- 
+
 <!-- CTA -->
 <section id="cta">
   <div class="cta-glow"></div>
@@ -991,7 +992,7 @@
     </div>
   </div>
 </section>
- 
+
 <!-- FOOTER -->
 <footer>
   <div class="wrap">
@@ -1009,15 +1010,15 @@
     </div>
   </div>
 </footer>
- 
+
 <script>
   // Intersection observer for fade-up animations
   const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis'); });
   }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
- 
+
   document.querySelectorAll('.fu').forEach(el => obs.observe(el));
- 
+
   // Animate score bars on entry
   const barObs = new IntersectionObserver((entries) => {
     entries.forEach(e => {
@@ -1030,7 +1031,7 @@
       }
     });
   }, { threshold: 0.3 });
- 
+
   document.querySelectorAll('.score-card').forEach(el => barObs.observe(el));
 </script>
 </body>
